@@ -5,6 +5,7 @@ import com.rs2.model.npcs.Npc;
 import com.rs2.model.players.Player;
 import com.rs2.model.players.WalkToActions;
 import com.rs2.model.players.WalkToActions.Actions;
+import com.rs2.model.content.combat.magic.Magic;
 import com.rs2.net.StreamBuffer;
 import com.rs2.net.packet.Packet;
 import com.rs2.net.packet.PacketManager.PacketHandler;
@@ -60,6 +61,7 @@ public class NpcPacketHandler implements PacketHandler {
 	}
 	
 	private void handleAttack(final Player player, Packet packet) {
+		player.getMovementHandler().reset();
 		int npcSlot = packet.getIn().readShort(StreamBuffer.ValueType.A);
 		final Npc npc = World.getNpcs()[npcSlot];
 		player.setClickId(npc.getNpcId());
@@ -70,9 +72,12 @@ public class NpcPacketHandler implements PacketHandler {
 	}
 	
 	private void handleMagicOnNpc(final Player player, Packet packet) {
+		player.getMovementHandler().reset();
 		int npcSlot = packet.getIn().readShort(StreamBuffer.ValueType.A, StreamBuffer.ByteOrder.LITTLE);
 		int magicId = packet.getIn().readShort(StreamBuffer.ValueType.A);
 		final Npc npc = World.getNpcs()[npcSlot];
+		player.getActionSender().sendMessage("Magic id: " + magicId);
+		player.getMagic().calculateAttackWithMagic(player, npc, magicId, Magic.MagicTypes.SINGLE_ATTACK);
 	}
 	
 }

@@ -89,14 +89,19 @@ public class Magic {
 			if (entity.getHitDelayTimer() == -1) {
 				autoCast = autoCastChange;
 				autoCastChange = null;
-			}	
+			}
 		}
 		if (singleMagicAttackChange != null) {
 			if (entity.getHitDelayTimer() == -1) {
+				System.out.println("resetting single");
 				singleMagicAttack = singleMagicAttackChange;
 				singleMagicAttackChange = null;
 			}
 		}
+		if (entity.isFrozen() && entity.getFrozenTimer() > 0)
+			entity.setFrozenTimer(entity.getFrozenTimer() - 1);
+		if (entity.isFrozen() && entity.getFrozenTimer() == 0)
+			entity.setFrozen(false);
 		if (!entity.isInstigatingAttack())
 			resetMagic(entity);
 	}
@@ -157,12 +162,6 @@ public class Magic {
 	  */
 	public void resetMagic(Entity attacker) {
 		if (attacker instanceof Player) {
-			/*if (autoCast != null) {
-				if (!autoCast.autoCasting && attacker.getAttackType() == Entity.AttackTypes.MAGIC
-				|| autoCast.autoCasting && !hasStaff()) {
-					player.getCombat().resetCombatType(attacker);
-				}
-			}*/
 			if (singleMagicAttack != null) {
 				singleMagicAttack = null;
 			}
@@ -216,7 +215,9 @@ public class Magic {
 		if (singleMagicAttack != null)
 			magicIndex = singleMagicAttack.magicIndex;
 		switch (magicIndex) {
-			case 0:
+			case 12891:
+				victim.setFrozen(true);
+				victim.setFrozenTimer(15);
 				break;
 		}
 	}
@@ -306,10 +307,14 @@ public class Magic {
 	}
 	
 	public int getMagicIndex() {
-		if (singleMagicAttack != null)
+		if (singleMagicAttack != null) {
+			System.out.println("single");
 			return singleMagicAttack.magicIndex;
-		if (autoCast != null)
+		}
+		if (autoCast != null) {
+			System.out.println("auto");
 			return autoCast.magicIndex;
+		}
 		return 0;
 	}
 	

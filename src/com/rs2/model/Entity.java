@@ -214,9 +214,8 @@ public abstract class Entity {
 		return target;
 	}
 	
-	public void setFrozen(boolean isFrozen, int frozenTimer) {
+	public void setFrozen(boolean isFrozen) {
 		this.isFrozen = isFrozen;
-		this.frozenTimer = frozenTimer;
 	}
 
 	public boolean isFrozen() {

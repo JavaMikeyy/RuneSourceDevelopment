@@ -45,12 +45,8 @@ public class Combat {
 				attackEntity(entity, entity.getTarget());
 		if (entity.getCombatTimer() > 0)
 			entity.setCombatTimer(entity.getCombatTimer() - 1);
-		//if (entity.getCombatTimer() == 0)
-			//resetCombat(entity);
-		if (entity.isFrozen() && entity.getFrozenTimer() > 0)
-			entity.setFrozenTimer(entity.getFrozenTimer() - 1);
-		if (entity.isFrozen() && entity.getFrozenTimer() == 0)
-			entity.setFrozen(false, 0);
+		if (entity.getCombatTimer() == 0 && entity.getCombatingEntity() != null)
+			resetCombat(entity);
 		sendDelayedHit(entity);
 	}
 	
@@ -91,9 +87,9 @@ public class Combat {
 					attacker.getCombatingEntity().getUpdateFlags().sendHighGraphic(player.getMagic().getSpellDefinitions()
 					[player.getMagic().getMagicIndex()].getEndGraphicId(), 0);
 			}
-			resetAfterAttack(attacker);
 			if (attacker instanceof Player)
 				Skulling.skullEntity(attacker, attacker.getCombatingEntity());
+			resetAfterAttack(attacker);
 		}
 		if (attacker.getHitDelayTimer() != -1)
 			attacker.setHitDelayTimer(attacker.getHitDelayTimer() - 1);
@@ -103,6 +99,7 @@ public class Combat {
 	  * Resets anything needed after the end of combat.
 	  */
 	public void resetCombat(Entity entity) {
+		entity.setCombatingEntity(null);
 		entity.setInstigatingAttack(false);
 		entity.setFollowingEntity(null);
 	}
@@ -247,7 +244,7 @@ public class Combat {
 			attacker.setHitDelayTimer((((calculateProjectileSpeed(attacker, victim)) / 10) / 2) - 1);
 		}
 		World.sendProjectile(attacker.getPosition(), offsetX, offsetY, projectileId, 43, 31, 
-		calculateProjectileSpeed(attacker, victim), victim.getIndex() - 1);
+		calculateProjectileSpeed(attacker, victim), victim instanceof Npc ? victim.getIndex() + 1 : victim.getIndex() - 1);
 	}
 	
 	public int calculateProjectileSpeed(Entity attacker, Entity victim) {
@@ -274,8 +271,9 @@ public class Combat {
 			if (player.getPrimaryDirection() != -1 && player.getSecondaryDirection() != -1)
 				combatDistance += 2;
 		}
-		if (attacker instanceof Npc && npc.getPrimaryDirection() != 1)
+		if (attacker instanceof Npc && npc.getPrimaryDirection() > -1) {
 			combatDistance += 1;
+		}
 		return Misc.getDistance(attacker.getPosition(), victim.getPosition()) <= combatDistance;
 	}
 	
@@ -287,16 +285,17 @@ public class Combat {
 		switch (entity.getAttackType()) {
 			case MELEE:
 				combatDistance += 1;
-				return combatDistance;
+				break;
 			case RANGED:
 				combatDistance += 8;
-				return combatDistance;
+				break;
 			case MAGIC:
 				combatDistance += 9;
-				return combatDistance;
+				break;
 			default:
-				return combatDistance;
+				combatDistance += 1;
 		}
+		return combatDistance;
 	}
 	
 }

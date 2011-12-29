@@ -49,13 +49,11 @@ public class Following {
 			followEntity(entity);
 	}
 	
-	public boolean wait = false;
-	
 	/**
 	  * An entity following another entity.
 	  */
 	public void followEntity(Entity follower) {
-		if (!withinRange(follower.getFollowingEntity(), follower)) {
+		if (outOfRange(follower.getFollowingEntity(), follower)) {
 			resetFollow(follower);
 			return;
 		}
@@ -64,11 +62,6 @@ public class Following {
 		else
 			follower.getUpdateFlags().faceEntity(follower.getFollowingEntity().getIndex());
 		if (inStoppingPosition(follower, 1) || follower.isFrozen()) {
-			wait = true;
-			return;
-		}
-		if (wait && follower instanceof Npc) {
-			wait = false;
 			return;
 		}
 		if (follower instanceof Player && follower.isInstigatingAttack() 
@@ -198,8 +191,8 @@ public class Following {
 	/**
 	  * Is the leader out of range of the follower?
 	  */
-	private boolean withinRange(Entity leader, Entity follower) {
-		return Misc.getDistance(leader.getPosition(), follower.getPosition()) <= 16;
+	private boolean outOfRange(Entity leader, Entity follower) {
+		return Misc.getDistance(leader.getPosition(), follower.getPosition()) > 16;
 	}
 	
 	/**

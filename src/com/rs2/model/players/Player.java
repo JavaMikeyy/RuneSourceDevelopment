@@ -214,7 +214,7 @@ public class Player extends Entity {
 		getActionSender().sendMessage("Oh dear, you have died!");
 		getCombat().resetCombat(this);
 		setCombatTimer(0);
-		setFrozen(false, 0);
+		setFrozen(false);
 		sendTeleport(Constants.START_X, Constants.START_Y, Constants.START_Z);
 		getUpdateFlags().sendAnimation(65535, 0);
 		for (int i = 0; i < getSkill().SKILL_COUNT; i++) {
@@ -227,13 +227,13 @@ public class Player extends Entity {
 	@Override
 	public void process() {
 		// If no packet for more than 5 seconds, disconnect.
-		/*if (getTimeoutStopwatch().elapsed() > 5000) {
+		if (getTimeoutStopwatch().elapsed() > 5000) {
 			System.out.println(this + " timed out.");
 			disconnect();
 			return;
-		}*/
-		getCombat().combatTick(this);
+		}
 		getFollowing().followTick(this);
+		getCombat().combatTick(this);
 		Skulling.skullTick(this);
 		movementHandler.process();
 	}

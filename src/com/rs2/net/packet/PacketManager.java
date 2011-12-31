@@ -113,7 +113,7 @@ public class PacketManager {
 		try {
 			// Read the incoming data.
 			if (player.getSocketChannel().read(player.getInData()) == -1) {
-				//player.disconnect();
+				player.disconnect();
 				return;
 			}
 
@@ -164,8 +164,8 @@ public class PacketManager {
 			// Clear everything for the next read.
 			player.getInData().clear();
 		} catch (Exception ex) {
-			//ex.printStackTrace();
-			//player.disconnect();
+			ex.printStackTrace();
+			player.disconnect();
 		}
 	}
 

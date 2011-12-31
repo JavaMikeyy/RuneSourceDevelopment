@@ -130,8 +130,8 @@ public final class PlayerUpdating {
 		StreamBuffer.OutBuffer block = StreamBuffer.newOutBuffer(128);
 
 		block.writeByte(player.getGender()); // Gender
-		//block.writeByte(player.isSkulled() ? 0 : -1);
-		//block.writeByte(player.getPrayerIcon());
+		block.writeByte(player.isSkulled() ? 0 : -1);
+		block.writeByte(player.getPrayerIcon());
 		
 		// Hat.
 		if (player.getEquipment().getItemContainer().isSlotUsed(Constants.EQUIPMENT_SLOT_HEAD)) {
@@ -254,7 +254,7 @@ public final class PlayerUpdating {
 
 		// Append the block length and the block to the packet.
 		out.writeByte(block.getBuffer().position(), StreamBuffer.ValueType.C);
-		//out.writeBytes(block.getBuffer());
+		out.writeBytes(block.getBuffer());
 	}
 
 	/**

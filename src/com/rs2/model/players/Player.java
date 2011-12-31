@@ -229,11 +229,11 @@ public class Player extends Entity {
 	@Override
 	public void process() {
 		// If no packet for more than 5 seconds, disconnect.
-		/*if (getTimeoutStopwatch().elapsed() > 5000) {
+		if (getTimeoutStopwatch().elapsed() > 5000) {
 			System.out.println(this + " timed out.");
 			disconnect();
 			return;
-		}*/
+		}
 		getCombat().combatTick(this);
 		getFollowing().followTick(this);
 		movementHandler.process();
@@ -312,8 +312,7 @@ public class Player extends Entity {
 		
 		try {
 			// ...and write it!
-			//if (this != null)
-				socketChannel.write(buffer);
+			socketChannel.write(buffer);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

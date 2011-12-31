@@ -63,14 +63,12 @@ public class Login {
 			// Read the login block.
 			StreamBuffer.InBuffer in = StreamBuffer.newInBuffer(inData);
 			in.readByte(); // Skip the magic ID value 255.
-
+			
 			// Validate the client version.
-			int clientVersion = in.readShort();
-			if (clientVersion != 317) {
-				System.err.println("Invalid client version: " + clientVersion);
-				player.disconnect();
-				return;
-			}
+			int clientVersion = in.readInt();
+			/*if (clientVersion != Constants.CLIENT_VERSION + 689263) {
+				player.setReturnCode(Constants.LOGIN_RESPONSE_UPDATED);
+			}*/
 
 			in.readByte(); // Skip the high/low memory version.
 
@@ -84,11 +82,11 @@ public class Login {
 
 			// Validate that the RSA block was decoded properly.
 			int rsaOpcode = in.readByte();
-			if (rsaOpcode != 10) {
+			/*if (rsaOpcode != 10) {
 				System.err.println("Unable to decode RSA block properly!");
 				player.disconnect();
 				return;
-			}
+			}*/
 
 			// Set up the ISAAC ciphers.
 			long clientHalf = in.readLong();
@@ -100,18 +98,18 @@ public class Login {
 			}
 			player.setEncryptor(new ISAACCipher(isaacSeed));
 			// Read the user authentication.
+			//int playerMacAddress = in.readInt();
 			in.readInt(); // Skip the user ID.
-			int playerMacAddress = in.readInt();
 			String username = in.readString();
 			String password = in.readString();
 			player.setUsername(username);
 			PlayerSave.load(player);
-			player.setMacAddress(playerMacAddress);
+			//player.setMacAddress(playerMacAddress);
 			if (password != null && player.getPassword() != null && player.getPassword() != "" && 
 					!player.getPassword().equals(password)) {
 				player.setReturnCode(Constants.LOGIN_RESPONSE_INVALID_CREDENTIALS);
 			}
-			else if (PunishmentManager.getPunishmentStatus(username, playerMacAddress, player.getHost(), PunishmentManager.Punishments.BAN)) {
+			else if (PunishmentManager.getPunishmentStatus(username, /*playerMacAddress*/0, player.getHost(), PunishmentManager.Punishments.BAN)) {
 				player.setReturnCode(Constants.LOGIN_RESPONSE_ACCOUNT_DISABLED);
 			}
 			else {

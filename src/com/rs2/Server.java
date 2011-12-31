@@ -161,7 +161,7 @@ public class Server implements Runnable {
 
 			// Make sure we can allow this connection.
 			if (!HostGateway.enter(socket.socket().getInetAddress().getHostAddress())) {
-				socket.close();
+				//socket.close();
 				continue;
 			}
 
@@ -210,6 +210,7 @@ public class Server implements Runnable {
 	 */
 	private void sleep() throws InterruptedException {
 		long sleepTime = cycleRate - cycleTimer.elapsed();
+		System.out.println("Sleep time: " + sleepTime + " with " + World.playerAmount() + " players online.");
 		if (sleepTime > 0) {
 			Thread.sleep(sleepTime);
 		} else {

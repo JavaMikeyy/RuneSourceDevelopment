@@ -17,7 +17,7 @@ import com.rs2.util.Misc;
 
 
 /**
-  * By Mikey` of Rune-Server (MSN: metallic_mike@yahoo.com)
+  * By Mikey` of Rune-Server
   * - This was MOSTLY taken from this tutorial: http://www.mkyong.com/tutorials/java-xml-tutorials/
   */
 public class PunishmentManager {
@@ -213,7 +213,7 @@ public class PunishmentManager {
 			root.addContent(index);
 			/** Adding a new child to the index element */
 			Element name = new Element("username");
-			name.addContent(username);
+			name.addContent("" + username);
 			index.addContent(name);
 			
 			/** Adding a new child to the index element */

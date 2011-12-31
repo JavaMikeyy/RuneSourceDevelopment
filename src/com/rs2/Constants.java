@@ -4,6 +4,8 @@ public class Constants {
 	
 	public static final String SERVER_NAME = "Azure (RuneSource) - Highly modified by Mikey`";
 	
+	public static final int CLIENT_VERSION = 1;
+	
 	public static final int EXP_RATE = 1;
 	public static final int START_X = 2972;
 	public static final int START_Y = 3391;
@@ -50,6 +52,9 @@ public class Constants {
 	public static final int GENDER_FEMALE = 1;
 	public static final int SHOP_UPDATE_TICK = 10;
 
+	/**
+	  * Same index order to get there value.
+	  */
 	public static final String BONUS_NAME[] = { "Stab", "Slash", "Crush", "Magic", "Range",
 			"Stab", "Slash", "Crush", "Magic", "Range", "Strength", "Prayer" 
 	};

@@ -315,6 +315,7 @@ public class ItemPacketHandler implements PacketHandler {
 		player.getRunecrafting().fillEssencePouch(item);
 		player.getBoneBurying().buryBone(item);
 		player.getHerblore().cleanHerb(item);
+		player.getFood().eatFood(item, slot);
 		if (item == 2528)
 			player.getGenie().sendLampInterface();
 	}

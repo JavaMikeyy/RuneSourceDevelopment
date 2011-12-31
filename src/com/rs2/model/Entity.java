@@ -238,7 +238,7 @@ public abstract class Entity {
 	}
 	
 	public boolean isInMultiZone() {
-		return false;
+		return true;
 	}
 	
 	public void setFollowingEntity(Entity followingEntity) {

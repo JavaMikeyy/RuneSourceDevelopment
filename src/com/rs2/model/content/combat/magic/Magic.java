@@ -7,7 +7,7 @@ import com.rs2.model.npcs.Npc;
 import com.rs2.model.Entity;
 
 /**
-  * By Mikey` of Rune-Server (MSN: metallic_mike@yahoo.com)
+  * By Mikey` of Rune-Server
   */
 public class Magic {
 
@@ -43,6 +43,8 @@ public class Magic {
 	private int magicId, magicMaxHit, magicIndex, graphicId, animationId;
 	public boolean autoCasting;
 	private String spellName;
+	
+	public static boolean attackInitialized = false;
 	
 	/**
 	  * The type of magic you are casting.
@@ -85,25 +87,11 @@ public class Magic {
 	}
 	
 	public void magicTick(Entity entity) {
-		if (autoCastChange != null) {
-			if (entity.getHitDelayTimer() == -1) {
-				autoCast = autoCastChange;
-				autoCastChange = null;
-			}
-		}
-		if (singleMagicAttackChange != null) {
-			if (entity.getHitDelayTimer() == -1) {
-				System.out.println("resetting single");
-				singleMagicAttack = singleMagicAttackChange;
-				singleMagicAttackChange = null;
-			}
-		}
-		if (entity.isFrozen() && entity.getFrozenTimer() > 0)
+		appendMagicAttackStatus(entity);
+		/*if (entity.isFrozen() && entity.getFrozenTimer() > 0)
 			entity.setFrozenTimer(entity.getFrozenTimer() - 1);
 		if (entity.isFrozen() && entity.getFrozenTimer() == 0)
-			entity.setFrozen(false);
-		if (!entity.isInstigatingAttack())
-			resetMagic(entity);
+			entity.setFrozen(false);*/
 	}
 	
 	/**
@@ -139,21 +127,32 @@ public class Magic {
 					}
 				}
 				if (magicType == MagicTypes.SINGLE_ATTACK) {
-					attacker.setAttackType(Entity.AttackTypes.MAGIC);
-					attacker.setInstigatingAttack(true);
-					attacker.setTarget(victim);
 					singleMagicAttackChange = new Magic(magicId, magicMaxHit, magicIndex, graphicId, animationId, false, spellName);
+					attacker.setTarget(victim);
 				}
 				else if (magicType == MagicTypes.AUTO_CAST) {
 					autoCastChange = new Magic(magicId, magicMaxHit, magicIndex, graphicId, animationId, true, spellName);
-					player.getActionSender().sendConfig(108, 1);
-					player.getActionSender().sendString((String) "@yel@" + spellDefinitions[autoCastChange.magicIndex].getSpellName(), 18585);
-					attacker.setAttackType(Entity.AttackTypes.MAGIC);
+					setAutoCasting(true, magicIndex);
+					attacker.setInstigatingAttack(false);
+					attacker.setFollowingEntity(null);
 				}
 			}
 			else {
 				player.getActionSender().sendMessage("You need a magic level of " + magicLevelRequired + " to cast " + spellName + ".");
 			}
+		}
+	}
+	
+	public void appendMagicAttackStatus(Entity entity) {
+		if (singleMagicAttackChange != null && !this.attackInitialized) {
+			singleMagicAttack = singleMagicAttackChange;
+			singleMagicAttackChange = null;
+			entity.setInstigatingAttack(true);
+		}
+		if (autoCastChange != null && !this.attackInitialized) {
+			player.getActionSender().sendMessage("Set new autocast.");
+			autoCast = autoCastChange;
+			autoCastChange = null;
 		}
 	}
 	
@@ -164,35 +163,30 @@ public class Magic {
 		if (attacker instanceof Player) {
 			if (singleMagicAttack != null) {
 				singleMagicAttack = null;
+				attacker.setInstigatingAttack(false);
+				attacker.setFollowingEntity(null);
 			}
-		}
-	}
-	
-	public void resetAutoCast() {
-		if (autoCast != null) {
-			autoCast = null;
+			this.attackInitialized = false;
+			player.getActionSender().sendMessage("Reset magic.");
 		}
 	}
 	
 	/**
 	  * Checking for and removing runes before casting the spell.
 	  */
-	public void removeRunes(Entity attacker) {
-		int magicIndex = -1;
-		if (autoCast != null)
-			magicIndex = autoCast.magicIndex;
-		if (singleMagicAttack != null)
-			magicIndex = singleMagicAttack.magicIndex;
+	public boolean removeRunes(Entity attacker) {
+		int magicIndex = getMagicIndex();
 		int[] runesRequired = spellDefinitions[magicIndex].getRunesRequired();
 		int[] runesToRemove = new int[runesRequired.length];
 		for (int i = 0; i < runesRequired.length; i += 2) {
 			if (!usingCorrespondingStaff(runesRequired[i])) {
 				if (player.getInventory().getItemContainer().getCount(runesRequired[i]) < runesRequired[i + 1]) {
 					String runeName = ItemManager.getInstance().getItemName(runesRequired[i]);
-					String spellName = getSpellName();
+					String spellName = spellDefinitions[magicIndex].getSpellName();
 					player.getActionSender().sendMessage("You don't have enough " + runeName + "s to cast " + spellName + ".");
-					player.getCombat().resetCombatType(attacker);
-					return;
+					attacker.setInstigatingAttack(false);
+					attacker.setFollowingEntity(null);
+					return false;
 				}
 			}
 			if (!usingCorrespondingStaff(runesRequired[i])) {
@@ -203,17 +197,14 @@ public class Magic {
 		for (int i = 0; i < runesToRemove.length; i += 2)
 			if (runesToRemove[i] != 0)
 				player.getInventory().removeItem(new Item(runesToRemove[i], runesToRemove[i + 1]));
+		return true;
 	}
 	
 	/**
 	  * Applying any extra effects (poisoning, freezing, etc) after the attack.
 	  */
 	public void applyMagicEffects(Entity attacker, Entity victim) {
-		int magicIndex = -1;
-		if (autoCast != null)
-			magicIndex = autoCast.magicIndex;
-		if (singleMagicAttack != null)
-			magicIndex = singleMagicAttack.magicIndex;
+		int magicIndex = getMagicIndex();
 		switch (magicIndex) {
 			case 12891:
 				victim.setFrozen(true);
@@ -223,7 +214,7 @@ public class Magic {
 	}
 	
 	/**
-	  * Check for a staff that corresponds to the rune.
+	  * Check for a staff that corresponds to the rune required.
 	  */
 	public boolean usingCorrespondingStaff(int runeId) {
 		Item weapon = player.getEquipment().getItemContainer().get(3);
@@ -269,9 +260,7 @@ public class Magic {
 			case 1093:
 				if (autoCast != null) {
 					autoCast.autoCasting = !autoCast.autoCasting;
-					player.getActionSender().sendConfig(108, autoCast.autoCasting ? 1 : 0);
-					if (autoCast.autoCasting)
-						player.setAttackType(Entity.AttackTypes.MAGIC);
+					setAutoCasting(autoCast.autoCasting, autoCast.magicIndex);
 				}
 				else {
 					player.getActionSender().sendMessage("You haven't selected a spell to autocast!");
@@ -308,14 +297,20 @@ public class Magic {
 	
 	public int getMagicIndex() {
 		if (singleMagicAttack != null) {
-			System.out.println("single");
 			return singleMagicAttack.magicIndex;
 		}
 		if (autoCast != null) {
-			System.out.println("auto");
 			return autoCast.magicIndex;
 		}
+		player.getActionSender().sendMessage("Could not find magicIndex, returning 0.");
 		return 0;
+	}
+	
+	/**
+	  * Used to return the magicIndex of an outside declarded instance of the class
+	  */
+	public int getNamedMagicIndex() {
+		return magicIndex;
 	}
 	
 	public String getSpellName() {
@@ -323,19 +318,25 @@ public class Magic {
 	}
 	
 	public boolean isAutoCasting() {
-		System.out.println("" + autoCast);
 		if (autoCast != null)
 			return autoCast.autoCasting;
 		return false;
 	}
 	
-	public void setAutoCasting(boolean autoCasting) {
+	public void setAutoCasting(boolean autoCasting, int magicIndex) {
 		if (autoCast != null) {
 			autoCast.autoCasting = autoCasting;
-			player.getActionSender().sendConfig(108, autoCast.autoCasting ? 1 : 0);
-			if (!autoCast.autoCasting) {
-				player.getActionSender().sendString("Choose spell", 18585);
-				resetAutoCast();
+			if (autoCast.autoCasting)
+				player.getActionSender().updateAutoCastInterface(autoCast.magicIndex);
+			if (!autoCast.autoCasting)
+				player.getActionSender().resetAutoCastInterface();
+		}
+		if (autoCastChange != null) {
+			autoCastChange.autoCasting = autoCasting;
+			if (autoCastChange.autoCasting)
+				player.getActionSender().updateAutoCastInterface(autoCastChange.magicIndex);
+			if (!autoCastChange.autoCasting) {
+				player.getActionSender().resetAutoCastInterface();
 			}
 		}
 	}

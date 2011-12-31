@@ -7,7 +7,7 @@ import com.rs2.model.Entity;
 import com.rs2.model.World;
 
 /**
-  * By Mikey` of Rune-Server (MSN: metallic_mike@yahoo.com)
+  * By Mikey` of Rune-Server
   */
 public class Following {
 

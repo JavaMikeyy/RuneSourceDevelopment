@@ -3,8 +3,7 @@ package com.rs2.model.content.combat;
 import com.rs2.model.players.Player;
 import com.rs2.model.players.ItemManager;
 import com.rs2.model.content.combat.magic.SpellDefinition;
-import com.rs2.model.content.combat.util.Skulling;
-import com.rs2.model.content.combat.util.AttackType;
+import com.rs2.model.content.combat.util.*;
 import com.rs2.model.npcs.Npc;
 import com.rs2.model.Entity;
 import com.rs2.model.World;
@@ -12,7 +11,7 @@ import com.rs2.model.tick.Tick;
 import com.rs2.util.Misc;
 
 /**
-  * By Mikey` of Rune-Server (MSN: metallic_mike@yahoo.com)
+  * By Mikey` of Rune-Server
   * - Credit to Xynth of Rune-Server for the projectiles.
   test
   */
@@ -20,6 +19,7 @@ public class Combat {
 
 	private Player player;
 	private Npc npc;
+	private HitDelay hit;
 	
 	public Combat(Player player) {
 		this.player = player;
@@ -47,7 +47,6 @@ public class Combat {
 			entity.setCombatTimer(entity.getCombatTimer() - 1);
 		if (entity.getCombatTimer() == 0 && entity.getCombatingEntity() != null)
 			resetCombat(entity);
-		sendDelayedHit(entity);
 	}
 	
 	/**
@@ -63,36 +62,36 @@ public class Combat {
 		}
 		if (attacker.getAttackType() == Entity.AttackTypes.MAGIC || attacker.getAttackType() == Entity.AttackTypes.RANGED)
 			sendProjectile(attacker, victim);
-		else
-			attacker.setHitDelayTimer(1);
+		else if (attacker instanceof Player)
+			hit = new HitDelay(player, attacker, victim, 1, 1);
+		else if (attacker instanceof Npc)
+			hit = new HitDelay(npc, attacker, victim, 1, 1);
+		
 		attacker.getUpdateFlags().sendAnimation(attacker.grabAttackAnimation(), 0);
 		appendCombatTimers(attacker, victim);
 		attacker.setCombatingEntity(victim);
 		victim.setCombatingEntity(attacker);
 	}
 	
-	public void sendDelayedHit(Entity attacker) {
-		if (attacker.getHitDelayTimer() == 0) {
-			attacker.getCombatingEntity().hit(1, 1);
-			if (sendDefenceAnimation(attacker)) {
-				attacker.getCombatingEntity().getUpdateFlags().sendAnimation(attacker.getCombatingEntity().grabDefenceAnimation(), 0);
-			}
-			autoRetaliate(attacker.getCombatingEntity());
-			if (attacker.getAttackType() == Entity.AttackTypes.MAGIC) {
-				if (player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getMagicType() == 
-						SpellDefinition.MagicTypes.ANCIENT)
-					attacker.getCombatingEntity().getUpdateFlags().sendGraphic(player.getMagic().getSpellDefinitions()
-					[player.getMagic().getMagicIndex()].getEndGraphicId(), 0);
-				else
-					attacker.getCombatingEntity().getUpdateFlags().sendHighGraphic(player.getMagic().getSpellDefinitions()
-					[player.getMagic().getMagicIndex()].getEndGraphicId(), 0);
-			}
-			if (attacker instanceof Player)
-				Skulling.skullEntity(attacker, attacker.getCombatingEntity());
-			resetAfterAttack(attacker);
+	public void completeDelayedHit(Entity attacker, Entity victim) {
+		if (sendDefenceAnimation(attacker)) {
+			attacker.getCombatingEntity().getUpdateFlags().sendAnimation(attacker.getCombatingEntity().grabDefenceAnimation(), 0);
 		}
-		if (attacker.getHitDelayTimer() != -1)
-			attacker.setHitDelayTimer(attacker.getHitDelayTimer() - 1);
+		autoRetaliate(attacker.getCombatingEntity());
+		if (attacker.getAttackType() == Entity.AttackTypes.MAGIC) {
+			if (player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getMagicType() == 
+					SpellDefinition.MagicTypes.ANCIENT) {
+				attacker.getCombatingEntity().getUpdateFlags().sendGraphic(player.getMagic().getSpellDefinitions()
+				[player.getMagic().getMagicIndex()].getEndGraphicId(), 0);
+			}
+			else {
+				attacker.getCombatingEntity().getUpdateFlags().sendHighGraphic(player.getMagic().getSpellDefinitions()
+				[player.getMagic().getMagicIndex()].getEndGraphicId(), 0);
+			}
+		}
+		if (attacker instanceof Player)
+			Skulling.skullEntity(attacker, attacker.getCombatingEntity());
+		resetAfterAttack(attacker);
 	}
 	
 	/**
@@ -109,21 +108,17 @@ public class Combat {
 	  */
 	public void resetAfterAttack(Entity attacker) {
 		if (attacker instanceof Player) {
-			player.getMagic().applyMagicEffects(attacker, attacker.getCombatingEntity());
-			player.getMagic().resetMagic(attacker);
+			switch (attacker.getAttackType()) {
+			case MAGIC:
+				player.getMagic().applyMagicEffects(attacker, attacker.getCombatingEntity());
+				player.getMagic().resetMagic(attacker);
+				break;
+			}
 		}
 	}
 	
 	/**
-	  * Resets anything needed after the end of combat.
-	  * - Still needs to check for weapon types.
-	  */
-	public void resetCombatType(Entity attacker) {
-		attacker.setAttackType(Entity.AttackTypes.MELEE);
-	}
-	
-	/**
-	  * Updates the Entity's combat timers
+	  * Updates the Entity's combat timers after an attack.
 	  */
 	public void appendCombatTimers(Entity attacker, Entity victim) {
 		attacker.setAttackTimer(attacker.grabHitTimer());
@@ -150,9 +145,9 @@ public class Combat {
 					player.getRanged().checkArrows();
 					break;
 				case MAGIC:
-					player.getMagic().removeRunes(attacker);
-					if (player.getMagic().singleMagicAttack != null)
-						resetCombat(attacker);
+					if (!player.getMagic().removeRunes(attacker))
+						return false;
+					player.getMagic().attackInitialized = true;
 					break;
 				default:
 					break;
@@ -237,27 +232,20 @@ public class Combat {
 			projectileId = projectileData[2];
 			attacker.getUpdateFlags().sendHighGraphic(projectileData[1], 0);
 		}
-		if (attacker.grabHitTimer() < 3) {
-			attacker.setHitDelayTimer(1);
+		hit = new HitDelay(player, attacker, victim, 1, ((((calculateProjectileSpeed(attacker, victim) + 3) / 9) / 3)));
+		if (projectileId != 0) {
+			World.sendProjectile(attacker.getPosition(), offsetX, offsetY, projectileId, 43, 31, 
+			calculateProjectileSpeed(attacker, victim), victim instanceof Npc ? victim.getIndex() + 1 : victim.getIndex() - 1);
 		}
-		else {
-			attacker.setHitDelayTimer((((calculateProjectileSpeed(attacker, victim)) / 10) / 2) - 1);
-		}
-		World.sendProjectile(attacker.getPosition(), offsetX, offsetY, projectileId, 43, 31, 
-		calculateProjectileSpeed(attacker, victim), victim instanceof Npc ? victim.getIndex() + 1 : victim.getIndex() - 1);
 	}
 	
 	public int calculateProjectileSpeed(Entity attacker, Entity victim) {
-		int[][] distanceCalc =
-		{{3, 60}, {6, 70}, {9, 80}, {12, 90}/*, {5, 100},
-		{6, 110}, {7, 120}*/};
-		if (attacker.grabHitTimer() < 3) {
-			return 55;
-		}
-		for (int i = 0; i < distanceCalc.length; i++)
-			if (Misc.getDistance(attacker.getPosition(), victim.getPosition()) <= distanceCalc[i][0])
-				return distanceCalc[i][1];
-		return 60;
+		int distance = Misc.getDistance(attacker.getPosition(), victim.getPosition());
+		int modifier = ((distance > 1 && distance < 5) ? 68 : 63);
+		modifier = (distance == 3 ? 70 : modifier);
+		modifier = (distance == 2 ? 73 : modifier);
+		int speed = (distance * 3) + modifier;
+		return speed;
 	}
 	
 	/** 

@@ -1,0 +1,17 @@
+<list>
+	<fooddef>
+		<foodName>Anchovies</foodName>
+		<foodId>315</foodId>
+		<healAmount>1</healAmount>
+	</fooddef>
+	<fooddef>
+		<foodName>Shrimps</foodName>
+		<foodId>315</foodId>
+		<healAmount>3</healAmount>
+	</fooddef>
+	<fooddef>
+		<foodName>Sardine</foodName>
+		<foodId>0</foodId>
+		<healAmount>3</healAmount>
+	</fooddef>
+</list>

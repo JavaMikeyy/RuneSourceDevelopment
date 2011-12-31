@@ -40,6 +40,7 @@ public class ActionSender {
 	}
 
 	public ActionSender sendConfigsOnLogin() {
+		resetAutoCastInterface();
 		sendConfig(166, player.getScreenBrightness());//screenBrightness
 		sendConfig(170, player.getMouseButtons());//mouseButtons
 		sendConfig(171, player.getChatEffects());//chatEffects
@@ -421,6 +422,23 @@ public class ActionSender {
 		out.writeHeader(player.getEncryptor(), 107);
 		player.send(out.getBuffer());
 		return this;
+	}
+	
+	public void updateAutoCastInterface(int spellIndex) {
+		String spellName = player.getMagic().getSpellDefinitions()[spellIndex].getSpellName();
+		sendString(spellName, 352);
+		sendConfig(108, 3);
+		sendConfig(43, 3);
+	}
+	
+	public void resetAutoCastInterface() {
+		if (player.getMagic().autoCast == null && player.getMagic().autoCastChange == null) {
+			sendConfig(108, 0);
+			sendConfig(43, 0);
+			return;
+		}
+		sendConfig(43, 0);
+		sendConfig(108, 2);
 	}
 	
 }

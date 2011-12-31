@@ -7,7 +7,7 @@ import com.rs2.model.npcs.Npc;
 import com.rs2.model.Entity;
 
 /**
-  * By Mikey` of Rune-Server (MSN: metallic_mike@yahoo.com)
+  * By Mikey` of Rune-Server
   * - Credit to Xynth of Rune-Server for the projectiles.
   test
   */

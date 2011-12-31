@@ -9,7 +9,7 @@ import com.rs2.model.npcs.Npc;
 import com.rs2.model.npcs.NpcDefinition;
 
 /**
-  * By Mikey` of Rune-Server (MSN: metallic_mike@yahoo.com)
+  * By Mikey` of Rune-Server
   */
 public class Genie {
 

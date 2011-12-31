@@ -6,7 +6,7 @@ import com.rs2.model.npcs.NpcDefinition;
 import com.rs2.model.players.Player;
 
 /**
-  * By Mikey` of Rune-Server (MSN: metallic_mike@yahoo.com)
+  * By Mikey` of Rune-Server
   *		- I took a few methods from Project Insanity,
   *		  edited them to actually work, and then added the rest of the interfaces myself.
   */

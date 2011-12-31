@@ -9,7 +9,7 @@ import com.rs2.model.tick.Tick;
 import com.rs2.model.players.Player;
 
 /**
-  * By Mikey` of Rune-Server (MSN: metallic_mike@yahoo.com)
+  * By Mikey` of Rune-Server
   * 	- Credit to Killamess for the most of the openQuestGuide method.
   */
 public class Questing {

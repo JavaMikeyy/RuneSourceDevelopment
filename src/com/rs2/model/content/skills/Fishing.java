@@ -10,7 +10,7 @@ import com.rs2.model.players.ItemManager;
 import com.rs2.model.players.WalkToActions;
 
 /**
-  * By Mikey` of Rune-Server (MSN: metallic_mike@yahoo.com)
+  * By Mikey` of Rune-Server
   */
 
 public class Fishing {

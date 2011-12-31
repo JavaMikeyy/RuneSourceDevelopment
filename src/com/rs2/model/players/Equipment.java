@@ -151,7 +151,7 @@ public class Equipment {
 			itemContainer.set(slotType, new Item(item.getId(), item.getCount()));
 		}
 		refresh();
-		player.getMagic().setAutoCasting(false);
+		player.getMagic().setAutoCasting(false, 0);
 		player.getInventory().refresh();
 		player.setAppearanceUpdateRequired(true);
 		sendBonus(player);

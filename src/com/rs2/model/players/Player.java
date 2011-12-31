@@ -40,6 +40,7 @@ import com.rs2.model.content.combat.*;
 import com.rs2.model.content.combat.util.Skulling;
 import com.rs2.model.content.combat.magic.Magic;
 import com.rs2.model.content.combat.ranged.Ranged;
+import com.rs2.model.content.food.Food;
 import com.rs2.model.content.skills.*;
 import com.rs2.model.npcs.Npc;
 import com.rs2.model.players.container.Container;
@@ -90,6 +91,7 @@ public class Player extends Entity {
 	private Combat combat = new Combat(this);
 	private Magic magic = new Magic(this);
 	private Ranged ranged = new Ranged(this);
+	private Food food = new Food(this);
 	private Runecrafting runecrafting = new Runecrafting(this);
 	private BoneBurying boneBurying = new BoneBurying(this);
 	private Herblore herblore = new Herblore(this);
@@ -227,15 +229,15 @@ public class Player extends Entity {
 	@Override
 	public void process() {
 		// If no packet for more than 5 seconds, disconnect.
-		if (getTimeoutStopwatch().elapsed() > 5000) {
+		/*if (getTimeoutStopwatch().elapsed() > 5000) {
 			System.out.println(this + " timed out.");
 			disconnect();
 			return;
-		}
-		getFollowing().followTick(this);
+		}*/
 		getCombat().combatTick(this);
-		Skulling.skullTick(this);
+		getFollowing().followTick(this);
 		movementHandler.process();
+		Skulling.skullTick(this);
 	}
 	
 	@Override
@@ -452,6 +454,16 @@ public class Player extends Entity {
 			setDead(true);
 			applyDeath();
 		}
+		if (keyword.equals("max")) {
+			for (int i = 0; i < 7; i++)
+				skill.addExp(i, 14000000);
+		}
+		if (keyword.equals("runes")) {
+			for (int i = 0; i < ((566 - 554) + 1); i++)
+				inventory.addItem(new Item(554 + i, 1000));
+				inventory.addItem(new Item(1381, 1));
+				inventory.addItem(new Item(4675, 1));
+		}
 		if (keyword.equals("banuser") && getStaffRights() >= 2) {
 			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.BAN, true, args[1].toLowerCase());
 		}
@@ -476,12 +488,8 @@ public class Player extends Entity {
 		if (keyword.equals("unaddressmuteuser") && getStaffRights() >= 1) {
 			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.ADDRESS_MUTE, false, 0);
 		}
-		if (keyword.equals("a")) {
+		if (keyword.equals("genie")) {
 			genie.sendRandom();
-		}
-		if (keyword.equals("refreshprayer")) {
-			getSkill().getLevel()[Skill.PRAYER] = 99;
-			getSkill().refresh(Skill.PRAYER);
 		}
 		if (keyword.equals("modern")) {
 			getActionSender().sendSidebarInterface(6, 1151);
@@ -990,6 +998,10 @@ public class Player extends Entity {
 	
 	public Ranged getRanged() {
 		return ranged;
+	}
+	
+	public Food getFood() {
+		return food;
 	}
 	
 	public Following getFollowing() {

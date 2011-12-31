@@ -1,0 +1,8 @@
+Global sounds with volume based on distance.
+Make the punishment system add your name to the list when you get punished, not on login. 
+^. And make it check your punishment status and remove the index if your clear of punishments.
+applyDeath() in the Player class causes concurrent modification exceptions.
+Finish teleports.
+Finish XML combat stuff.
+Verify the client with a string check through the magic id.
+Fix offset animation to graphic on wave spells.

@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HostGateway {
 
 	/** The maximum amount of connections per host. */
-	public static final int MAX_CONNECTIONS_PER_HOST = 2000;
+	public static final int MAX_CONNECTIONS_PER_HOST = 70000;
 
 	/** Used to keep track of hosts and their amount of connections. */
 	private static ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<String, Integer>();

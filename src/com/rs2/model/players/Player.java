@@ -569,7 +569,7 @@ public class Player extends Entity {
 			actionSender.sendInterface(3559);
 			hasDesigned = true;
 		}
-		System.out.println(this + " has logged in.");
+		//System.out.println(this + " has logged in.");
 		isLoggedIn = true;
 		getUpdateFlags().setUpdateRequired(true);
 		setAppearanceUpdateRequired(true);

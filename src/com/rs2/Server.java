@@ -169,7 +169,7 @@ public class Server implements Runnable {
 			socket.configureBlocking(false);
 			SelectionKey key = socket.register(selector, SelectionKey.OP_READ);
 			Player player = new Player(key);
-			System.out.println("Accepted " + player + ".");
+			//System.out.println("Accepted " + player + ".");
 			playerMap.put(key, player);
 		}
 	}

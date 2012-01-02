@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,6 +58,7 @@ import com.rs2.util.Areas;
 import com.rs2.util.Misc;
 import com.rs2.util.PlayerSave;
 import com.rs2.util.PunishmentManager;
+import com.rs2.util.plugin.LocalPlugin;
 import com.rs2.util.plugin.PluginManager;
 
 /**
@@ -166,6 +168,7 @@ public class Player extends Entity {
 	private int musicVolume = 0;
 	private int effectVolume = 0;
 	private int questPoints = 0;
+	private List<LocalPlugin> plugins = new ArrayList<LocalPlugin>();
 	
 	private static Object[][] staff = {
 		{"Mopar", 2}
@@ -235,11 +238,14 @@ public class Player extends Entity {
 			applyDeathTimer --;
 			applyDeath();
 		}
-		PluginManager.onPlayerTick(this);
 		getFollowing().followTick(this);
 		getCombat().combatTick(this);
 		movementHandler.process();
 		Skulling.skullTick(this);
+		
+		for (LocalPlugin lp : plugins) {
+			lp.onTick();
+		}
 	}
 	
 	@Override
@@ -301,7 +307,16 @@ public class Player extends Entity {
 		timeoutStopwatch.reset();
 		int positionBefore = inData.position();
 		StreamBuffer.InBuffer in = StreamBuffer.newInBuffer(inData);
-		PacketManager.handlePacket(this, new Packet(opcode, packetLength, in));
+		Packet p = new Packet(opcode, packetLength, in);
+		boolean dispatch = true;
+		for (LocalPlugin lp : plugins) {
+			if (!lp.onPacketArrival(p)) {
+				dispatch = false;
+			}
+		}
+		if (dispatch) {
+			PacketManager.handlePacket(this, p);
+		}
 		int read = inData.position() - positionBefore;
 		for (int i = read; i < packetLength; i++) {
 			inData.get();
@@ -574,6 +589,7 @@ public class Player extends Entity {
 		refreshOnLogin();
 		getQuesting().clearQuestGuide();
 		getQuesting().updateQuestList();
+		PluginManager.loadLocalPlugins(this);
 		if (!hasDesigned) {
 			actionSender.sendInterface(3559);
 			hasDesigned = true;
@@ -1379,6 +1395,18 @@ public class Player extends Entity {
 	
 	public MagicBookTypes getMagicBookType() {
 		return magicBookType;
+	}
+	
+	public void addPlugin(LocalPlugin lp) {
+		plugins.add(lp);
+	}
+	
+	public List<LocalPlugin> getPlugins() {
+		return plugins;
+	}
+	
+	public void removePlugin(LocalPlugin lp) {
+		plugins.remove(lp);
 	}
 	
 	public enum MagicBookTypes {

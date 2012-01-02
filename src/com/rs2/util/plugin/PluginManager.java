@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.rs2.model.players.Player;
-import com.rs2.net.packet.Packet;
 
 /**
  * Manages all plugins for the server.
@@ -20,9 +19,14 @@ import com.rs2.net.packet.Packet;
 public class PluginManager {
 	
 	/**
-	 * A linked-list of currently loaded plugins.
+	 * A linked-list of class objects representing the loaded local plugins.
 	 */
-	private static List<AbstractPlugin> plugins = new LinkedList<AbstractPlugin>();
+	private static List<Class<LocalPlugin>> localPlugins = new LinkedList<Class<LocalPlugin>>();
+	
+	/**
+	 * A linked-list of currently loaded global plugins.
+	 */
+	private static List<GlobalPlugin> globalPlugins = new LinkedList<GlobalPlugin>();
 	
 	/**
 	 * Loads plugins located in the com.rs2.util.plugin.impl package.
@@ -34,7 +38,11 @@ public class PluginManager {
 			
 			for (Class s : pluginClasses) {
 				AbstractPlugin p = (AbstractPlugin) s.newInstance();
-				register(p);
+				if (p.getType() == AbstractPlugin.Type.GLOBAL) {
+					register((GlobalPlugin) p);
+				} else if (p.getType() == AbstractPlugin.Type.LOCAL) {
+					register(s);
+				}
 			}
 		} catch (InstantiationException e) {
 			e.printStackTrace();
@@ -48,12 +56,36 @@ public class PluginManager {
 	}
 	
 	/**
+	 * Loads all local plugins for the specified player.
+	 * @param p The player.
+	 */
+	public static void loadLocalPlugins(Player p) {
+		synchronized (localPlugins) {
+			Iterator<Class<LocalPlugin>> iter = localPlugins.iterator();
+			
+			while (iter.hasNext()) {
+				try {
+					LocalPlugin lp = iter.next().newInstance();
+					lp.setPlayer(p);
+					p.addPlugin(lp);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+					System.out.println("Error instantiating local plugin for " + p.getUsername());
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+					System.out.println("Error instantiating local plugin for " + p.getUsername());
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Called every server cycle (600ms).
 	 * Calls onTick() in the plugin.
 	 */
 	public static void tick() {
-		synchronized (plugins) {
-			Iterator<AbstractPlugin> iter = plugins.iterator();
+		synchronized (globalPlugins) {
+			Iterator<GlobalPlugin> iter = globalPlugins.iterator();
 			
 			while (iter.hasNext()) {
 				iter.next().onTick();
@@ -65,8 +97,8 @@ public class PluginManager {
 	 * Powers the plug-in's tick (so long as requested in plugin)
 	 */
 	public static void reset() {
-		synchronized (plugins) {
-			Iterator<AbstractPlugin> iter = plugins.iterator();
+		synchronized (globalPlugins) {
+			Iterator<GlobalPlugin> iter = globalPlugins.iterator();
 			
 			while (iter.hasNext()) {
 				iter.next().reset();
@@ -79,8 +111,8 @@ public class PluginManager {
 	 * calls onDestroy().
 	 */
 	public static void close() {
-		synchronized (plugins) {
-			Iterator<AbstractPlugin> iter = plugins.iterator();
+		synchronized (globalPlugins) {
+			Iterator<GlobalPlugin> iter = globalPlugins.iterator();
 			
 			while (iter.hasNext()) {
 				iter.next().onDestroy();
@@ -89,26 +121,25 @@ public class PluginManager {
 	}
 	
 	/**
-	 * Registers a new plugin.
+	 * Registers a new local plugin.
 	 * @param plugin The plugin to register.
 	 */
-	private static void register(AbstractPlugin plugin) {
-		synchronized (plugins) {
-			System.out.println("Loaded plugin: " + plugin.getName() + " v" + plugin.getVersion() + " by " + plugin.getAuthor());
-			plugin.onCreate();
-			plugins.add(plugin);
+	private static void register(Class<LocalPlugin> plugin) {
+		synchronized (localPlugins) {
+			System.out.println("Loaded local plugin: " + plugin.getSimpleName());
+			localPlugins.add(plugin);
 		}
 	}
 	
 	/**
-	 * De-registers the specified plugin.
-	 * @param plugin The plugin to de-register.
+	 * Registers a new global plugin.
+	 * @param plugin The plugin to register.
 	 */
-	@Deprecated
-	private static void deregister(AbstractPlugin plugin) {
-		synchronized (plugins) {
-			plugin.onDestroy();
-			plugins.remove(plugin);
+	private static void register(GlobalPlugin plugin) {
+		synchronized (localPlugins) {
+			System.out.println("Loaded global plugin: " + plugin.getName() + " v" + plugin.getVersion() + " by " + plugin.getAuthor());
+			plugin.onCreate();
+			globalPlugins.add(plugin);
 		}
 	}
 	
@@ -159,40 +190,6 @@ public class PluginManager {
             }
         }
         return classes;
-    }
-    
-	/**
-	 * Dispatches the packet arrival event to active plugins.
-	 * @param player The player receiving the packet.
-	 * @param packet The received packet.
-	 * @return Return TRUE if this packet should be processed elsewhere, 
-	 * return FALSE if this packet should not be processed elsewhere.
-	 */
-    public static boolean onPacketArrival(Player player, Packet packet) {
-		synchronized (plugins) {
-			Iterator<AbstractPlugin> iter = plugins.iterator();
-			
-			while (iter.hasNext()) {
-				if (!iter.next().onPacketArrival(player, packet)) return false;
-			}
-		}
-    	return true;
-    }
-    
-    /**
-     * Dispatches an onPlayerTick event
-     * allowing for the plugin
-     * to manipulate player specific data.
-     * @param player The player.
-     */
-    public static void onPlayerTick(Player player) {
-		synchronized (plugins) {
-			Iterator<AbstractPlugin> iter = plugins.iterator();
-			
-			while (iter.hasNext()) {
-				iter.next().onPlayerTick(player);
-			}
-		}
     }
 
 }

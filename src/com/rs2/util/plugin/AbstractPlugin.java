@@ -3,44 +3,65 @@ package com.rs2.util.plugin;
 import com.rs2.model.players.Player;
 import com.rs2.net.packet.Packet;
 
+/**
+ * Represents an abstract server plugin.
+ * @author Tommo
+ *
+ */
 public abstract class AbstractPlugin {
 	
+	public static enum Type {
+		ABSTRACT, GLOBAL, LOCAL
+	}
+	
+	private Type type = Type.ABSTRACT;
+	
+	public AbstractPlugin(Type type) {
+		this.type = type;
+	}
+	
+	/**
+	 *
+	 * @return The name of the plugin.
+	 */
 	public abstract String getName();
 	
+	/**
+	 * 
+	 * @return The author of the plugin.
+	 */
 	public abstract String getAuthor();
 	
+	/**
+	 * 
+	 * @return The plugin version.
+	 */
 	public abstract double getVersion();
 	
-	public abstract boolean canTick();
-	
+	/**
+	 * Called when a plugin is initiated.
+	 */
 	public void onCreate() {
 	}
 	
+	/**
+	 * Called when a plugin is shutdown.
+	 */
 	public void onDestroy() {
 	}
 	
-	public void onTick() {
-	}
-	
+	/**
+	 * Resets the current plugin.
+	 */
 	public void reset() {
 	}
 	
 	/**
-	 * Called when a packet arrives.
-	 * @param player The player receiving the packet.
-	 * @param packet The received packet.
-	 * @return Return TRUE if this packet should be processed elsewhere, 
-	 * return FALSE if this packet should not be processed elsewhere.
+	 * 
+	 * @return The {@link Type} of the plugin.
 	 */
-	public boolean onPacketArrival(Player player, Packet packet) {
-		return true;
-	}
-	
-	/**
-	 * Called when the passed in player is being updated.
-	 * @param player The player being updated.
-	 */
-	public void onPlayerTick(Player player) {
+	public Type getType() {
+		return type;
 	}
 	
 	/**

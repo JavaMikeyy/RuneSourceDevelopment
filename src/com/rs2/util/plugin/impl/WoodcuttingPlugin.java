@@ -1,9 +1,7 @@
 package com.rs2.util.plugin.impl;
 
 import com.rs2.model.players.Item;
-import com.rs2.model.players.Player;
-import com.rs2.util.plugin.AbstractPlugin;
-import com.rs2.net.StreamBuffer;
+import com.rs2.util.plugin.LocalPlugin;
 import com.rs2.net.packet.Packet;
 
 /**
@@ -11,9 +9,7 @@ import com.rs2.net.packet.Packet;
  * @author Tommo
  *
  */
-public class WoodcuttingPlugin extends AbstractPlugin {
-	
-	private boolean canTick = false;
+public class WoodcuttingPlugin extends LocalPlugin {
 	
 	private int timer = 0;
 	
@@ -39,11 +35,6 @@ public class WoodcuttingPlugin extends AbstractPlugin {
 	public double getVersion() {
 		return 1.0;
 	}
-	
-	@Override
-	public boolean canTick() {
-		return canTick;
-	}
 
 	@Override
 	public void onDestroy() {
@@ -58,35 +49,19 @@ public class WoodcuttingPlugin extends AbstractPlugin {
 	}
 	
 	@Override
-	public void reset() {
-		canTick = false;
-	}
-	
-	@Override
-	public boolean onPacketArrival(Player player, Packet packet) {
+	public boolean onPacketArrival(Packet packet) {
 		if (packet.getOpcode() == PACKET_CLICK_OBJECT) {
-			if (player.getClickId() == 1278) {
-				canTick = true;
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	@Override
-	public void onPlayerTick(Player player) {
-		if (canTick) {
 			if (timer > 0) {
-				player.getUpdateFlags().sendAnimation(WOODCUTTING_ANIM_ID, 0); 
-			}
-			else {
-				player.getUpdateFlags().sendAnimation(WOODCUTTING_ANIM_ID, 0); 
-				player.getActionSender().sendMessage("You cut the tree.");
-				player.getInventory().addItem(new Item(1511));
-				player.getSkill().addExp(WOODCUTTING_SKILL_ID, 10000);
+				getPlayer().getUpdateFlags().sendAnimation(WOODCUTTING_ANIM_ID, 0); 
+			} else {
+				getPlayer().getUpdateFlags().sendAnimation(WOODCUTTING_ANIM_ID, 0); 
+				getPlayer().getActionSender().sendMessage("You cut the tree.");
+				getPlayer().getInventory().addItem(new Item(1511));
+				getPlayer().getSkill().addExp(WOODCUTTING_SKILL_ID, 10000);
 				timer = 5;
 			}
 		}
+		return true;
 	}
 
 }

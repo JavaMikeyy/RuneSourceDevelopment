@@ -52,8 +52,6 @@ public class ObjectPacketHandler implements PacketHandler {
 		player.setClickX(packet.getIn().readShort(true, StreamBuffer.ValueType.A, StreamBuffer.ByteOrder.LITTLE));
 		player.setClickId(packet.getIn().readShort());
 		player.setClickY(packet.getIn().readShort(StreamBuffer.ValueType.A));
-		if (!PluginManager.onPacketArrival(player, packet))
-			return;
 		WalkToActions.setActions(Actions.OBJECT_FIRST_CLICK);
 		WalkToActions.doActions(player);
 	}

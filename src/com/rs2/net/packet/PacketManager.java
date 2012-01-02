@@ -3,7 +3,6 @@ package com.rs2.net.packet;
 import com.rs2.Constants;
 import com.rs2.model.players.Player;
 import com.rs2.model.players.Player.LoginStages;
-import com.rs2.util.plugin.PluginManager;
 import com.rs2.net.packet.packets.AppearancePacketHandler;
 import com.rs2.net.packet.packets.ButtonPacketHandler;
 import com.rs2.net.packet.packets.ChatInterfacePacketHandler;

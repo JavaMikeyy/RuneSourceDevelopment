@@ -5,6 +5,7 @@ import java.util.Arrays;
 import com.rs2.Constants;
 import com.rs2.model.players.container.Container;
 import com.rs2.model.players.container.Container.Type;
+import com.rs2.model.content.combat.util.Bonuses;
 
 public class Equipment {
 	
@@ -98,7 +99,7 @@ public class Equipment {
 	};
 	
 	public static final int[] FULL_HELM = {1153, 1155, 1157, 1159, 1161, 1163, 1165, 
-		2587, 2595, 2605, 2613, 2619, 2627, 2657, 2673, 3486 
+		2587, 2595, 2605, 2613, 2619, 2627, 2657, 2673, 3486, 4745
 	};
 	
 	public static final int[] FULL_MASK = {1053, 1055, 1057 
@@ -176,12 +177,18 @@ public class Equipment {
 	
 	public void setBonus(Player player) {
 		for (int i = 0; i < 14; i ++) {
-			if (player.getEquipment().getItemContainer().get(i) == null) {
+			if (player.getEquipment().getItemContainer().get(i) == null || i == 13) {
 				continue;
 			}
 			Item item = player.getEquipment().getItemContainer().get(i);
 			for (int bonus = 0; bonus < 12; bonus ++) {
-				player.setBonuses(bonus, player.getBonuses().get(bonus) + item.getEquipmentDefintion().getBonuses()[bonus]);
+				if (Bonuses.getBonusDefinitions()[item.getId()] == null) {
+					player.getActionSender().sendMessage("There's no bonus for the "
+					+ ItemManager.getItemDefinitions()[item.getId()].getName() + " you just equipped, " +
+					" please report this error.");
+					continue;
+				}
+				player.setBonuses(bonus, Bonuses.getBonusDefinitions()[item.getId()].getBonus(bonus) + player.getBonuses().get(bonus));
 			}
 		}
 	}
@@ -354,7 +361,6 @@ public class Equipment {
 	public class EquipmentDefinition {
 		
 		private int id;
-		private int[] bonuses;
 		private int standAnim;
 		private int walkAnim;
 		private int runAnim;
@@ -372,14 +378,6 @@ public class Equipment {
 
 		public int getId() {
 			return id;
-		}
-
-		public void setBonuses(int[] bonuses) {
-			this.bonuses = bonuses;
-		}
-
-		public int[] getBonuses() {
-			return bonuses;
 		}
 
 		public void setStandAnim(int standAnim) {

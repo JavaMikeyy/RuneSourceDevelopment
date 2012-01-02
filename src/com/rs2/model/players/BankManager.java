@@ -58,7 +58,7 @@ public class BankManager {
 		Item item = new Item(bankItem + 1);
 		boolean noted = item.getDefinition().isNote();
 		int freeInventorySlot = player.getInventory().getItemContainer().freeSlot();
-		if (freeInventorySlot == -1) {
+		if (!player.getInventory().getItemContainer().hasRoomFor(new Item(bankItem, bankAmount))) {
 			player.getActionSender().sendMessage("Not enough space in your inventory");
 			return;
 		}

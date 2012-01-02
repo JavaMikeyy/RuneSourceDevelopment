@@ -63,6 +63,14 @@ public class ActionSender {
 		player.send(out.getBuffer());
 		return this;
 	}
+	
+	public ActionSender updateFlashingSideIcon(int tabId) {
+		StreamBuffer.OutBuffer out = StreamBuffer.newOutBuffer(7);
+		out.writeHeader(player.getEncryptor(), 152);
+		out.writeByte(tabId);
+		player.send(out.getBuffer());
+		return this;
+	}
 
 	public ActionSender sendUpdateItem(int slot, int inventoryId, Item item) {
 		StreamBuffer.OutBuffer out = StreamBuffer.newOutBuffer(32);

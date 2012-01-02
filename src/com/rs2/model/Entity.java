@@ -102,6 +102,35 @@ public abstract class Entity {
 		}
 	}
 	
+	public int getSkillLevel(int skillId) {
+		if (this instanceof Player) {
+			Player player = (Player) this;
+			return player.getSkill().getLevel()[skillId];
+		}
+		else {
+			Npc npc = (Npc) this;
+			return npc.getDefinition().getCombatLevel(skillId);
+		}
+	}
+	
+	public int getBonus(int bonusId) {
+		if (this instanceof Player) {
+			Player player = (Player) this;
+			return player.getBonuses().get(bonusId);
+		}
+		else {
+			return 0;
+		}
+	}
+	
+	public int getNpcMaxHit() {
+		if (this instanceof Npc) {
+			Npc npc = (Npc) this;
+			return npc.getDefinition().getMaxHit();
+		}
+		return 0;
+	}
+	
 	public void setIndex(int index) {
 		this.index = index;
 	}

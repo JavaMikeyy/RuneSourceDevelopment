@@ -59,11 +59,11 @@ public class Ranged {
 	public boolean checkArrows() {
 		Item weapon = player.getEquipment().getItemContainer().get(3);
 		Item arrow = player.getEquipment().getItemContainer().get(13);
-		if (weapon == null)
-			return false;
 		if (weapon.getId() == bowDefinitions[bowIndex].getBowId()) {
 			if (bowDefinitions[bowIndex].getHighestArrowId() == 0)
 				return true;
+			if (arrow.getId() < 1)
+				return false;
 			if (!bowDefinitions[bowIndex].arrowAllowed(arrow.getId())) {
 				String arrowName = ItemManager.getInstance().getItemName(arrow.getId());
 				String bowName = ItemManager.getInstance().getItemName(weapon.getId());

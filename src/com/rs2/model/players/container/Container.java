@@ -264,6 +264,8 @@ public class Container {
 	 * @return The item.
 	 */
 	public Item get(int index) {
+		if (index == -1)
+			return null;
 		return items[index];
 	}
 
@@ -440,6 +442,8 @@ public class Container {
 		if ((item.getDefinition().isStackable() || type.equals(Type.ALWAYS_STACK)) && !type.equals(Type.NEVER_STACK)) {
 			int slot = getSlotById(item.getId());
 			Item stack = get(slot);
+			if (stack == null)
+				return -1;
 			if (stack.getCount() > item.getCount()) {
 				removed = item.getCount();
 				set(slot, new Item(stack.getId(), stack.getCount() - item.getCount()));

@@ -38,6 +38,7 @@ import com.rs2.model.content.questing.Questing;
 import com.rs2.model.content.randomevents.*;
 import com.rs2.model.content.combat.*;
 import com.rs2.model.content.combat.util.Skulling;
+import com.rs2.model.content.combat.util.DetermineHit;
 import com.rs2.model.content.combat.magic.Magic;
 import com.rs2.model.content.combat.ranged.Ranged;
 import com.rs2.model.content.food.Food;
@@ -56,6 +57,7 @@ import com.rs2.util.Areas;
 import com.rs2.util.Misc;
 import com.rs2.util.PlayerSave;
 import com.rs2.util.PunishmentManager;
+import com.rs2.util.plugin.PluginManager;
 
 /**
  * Represents a logged-in player.
@@ -150,6 +152,7 @@ public class Player extends Entity {
 	private int prayerIcon = -1;
 	private int skullIcon = -1;
 	private int skullTimer = -1;
+	private int applyDeathTimer = -1;
 	private boolean[] isUsingPrayer = new boolean[26];
 	private int prayerDrainTimer = 6;
 	private MagicBookTypes magicBookType = MagicBookTypes.MODERN;
@@ -191,21 +194,15 @@ public class Player extends Entity {
 	}
 
 	public void applyDeath() {
-		World.submit(new Tick(3) {
-			int tick = 0;
-			@Override
-			public void execute() {
-				if (tick == 0)
-					getUpdateFlags().sendAnimation(2304, 0);
-				if (tick == 1) {
-					applyLife();
-					stop();
-				}
-				tick++;
-			}
-		});
+		if (applyDeathTimer == 3) {
+			getUpdateFlags().sendAnimation(2304, 0);
+		}
+		else if (applyDeathTimer == 0) {
+			applyLife();
+			applyDeathTimer --;
+		}
 	}
-	
+		
 	public void applyLife() {
 		//dropitems
 		if (getCombatingEntity() instanceof Player) {
@@ -229,13 +226,18 @@ public class Player extends Entity {
 	@Override
 	public void process() {
 		// If no packet for more than 5 seconds, disconnect.
-		if (getTimeoutStopwatch().elapsed() > 5000) {
+		/*if (getTimeoutStopwatch().elapsed() > 5000) {
 			System.out.println(this + " timed out.");
 			disconnect();
 			return;
+		}*/
+		if (applyDeathTimer > -1) {
+			applyDeathTimer --;
+			applyDeath();
 		}
-		getCombat().combatTick(this);
+		PluginManager.onPlayerTick(this);
 		getFollowing().followTick(this);
+		getCombat().combatTick(this);
 		movementHandler.process();
 		Skulling.skullTick(this);
 	}
@@ -260,7 +262,7 @@ public class Player extends Entity {
 		skill.refresh(Skill.HITPOINTS);
 		if (skill.getLevel()[Skill.HITPOINTS] <= 0) {
 			setDead(true);
-			applyDeath();
+			applyDeathTimer = 6;
 		}
 	}
 
@@ -331,7 +333,7 @@ public class Player extends Entity {
 					return;
 				}
 				getAttributes().put("canPickup", Boolean.TRUE);
-				privateMessaging.refresh();
+				//privateMessaging.refresh();
 				/*if (!Areas.isInWildernessArea(getPosition())) {
 					getActionSender().sendPlayerOption("Follow", 1);
 					getActionSender().sendPlayerOption("Trade with", 2);
@@ -462,6 +464,13 @@ public class Player extends Entity {
 				inventory.addItem(new Item(554 + i, 1000));
 				inventory.addItem(new Item(1381, 1));
 				inventory.addItem(new Item(4675, 1));
+		}
+		if (keyword.equals("maxh")) {
+			actionSender.sendMessage("Max hit: " + DetermineHit.getMeleeMaxHit(this));
+			actionSender.sendMessage("accuracy: " + DetermineHit.getMeleeAccuracy(this, this));
+		}
+		if (keyword.equals("setconfig")) {
+			actionSender.sendConfig(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
 		}
 		if (keyword.equals("banuser") && getStaffRights() >= 2) {
 			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.BAN, true, args[1].toLowerCase());

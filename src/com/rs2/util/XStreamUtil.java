@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import com.rs2.model.content.combat.magic.SpellLoader;
 import com.rs2.model.content.combat.ranged.BowLoader;
+import com.rs2.model.content.combat.util.Bonuses;
 import com.rs2.model.content.food.FoodLoader;
 import com.rs2.model.npcs.NpcLoader;
 import com.rs2.model.players.ItemManager;
@@ -59,6 +60,7 @@ public class XStreamUtil {
 		xStream.alias("spelldef", com.rs2.model.content.combat.magic.SpellDefinition.class);
 		xStream.alias("bowdef", com.rs2.model.content.combat.ranged.BowDefinition.class);
 		xStream.alias("fooddef", com.rs2.model.content.food.FoodLoader.FoodDefinition.class);
+		xStream.alias("bonus", com.rs2.model.content.combat.util.Bonuses.BonusDefinition.class);
 	}
 	
 	public static void loadAllFiles() throws FileNotFoundException, IOException {
@@ -71,6 +73,7 @@ public class XStreamUtil {
 		SpellLoader.loadSpellDefinitions();
 		BowLoader.loadBowDefinitions();
 		FoodLoader.loadFoodDefinitions();
+		Bonuses.loadBonusDefinitions();
 	}
 
 }

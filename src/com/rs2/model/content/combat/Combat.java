@@ -63,9 +63,9 @@ public class Combat {
 		if (attacker.getAttackType() == Entity.AttackTypes.MAGIC || attacker.getAttackType() == Entity.AttackTypes.RANGED)
 			sendProjectile(attacker, victim);
 		else if (attacker instanceof Player)
-			hit = new HitDelay(player, attacker, victim, 1, 1);
+			hit = new HitDelay(player, attacker, victim, 1, 1, 0);
 		else if (attacker instanceof Npc)
-			hit = new HitDelay(npc, attacker, victim, 1, 1);
+			hit = new HitDelay(npc, attacker, victim, 1, 1, 0);
 		
 		attacker.getUpdateFlags().sendAnimation(attacker.grabAttackAnimation(), 0);
 		appendCombatTimers(attacker, victim);
@@ -78,17 +78,6 @@ public class Combat {
 			attacker.getCombatingEntity().getUpdateFlags().sendAnimation(attacker.getCombatingEntity().grabDefenceAnimation(), 0);
 		}
 		autoRetaliate(attacker.getCombatingEntity());
-		if (attacker.getAttackType() == Entity.AttackTypes.MAGIC) {
-			if (player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getMagicType() == 
-					SpellDefinition.MagicTypes.ANCIENT) {
-				attacker.getCombatingEntity().getUpdateFlags().sendGraphic(player.getMagic().getSpellDefinitions()
-				[player.getMagic().getMagicIndex()].getEndGraphicId(), 0);
-			}
-			else {
-				attacker.getCombatingEntity().getUpdateFlags().sendHighGraphic(player.getMagic().getSpellDefinitions()
-				[player.getMagic().getMagicIndex()].getEndGraphicId(), 0);
-			}
-		}
 		if (attacker instanceof Player)
 			Skulling.skullEntity(attacker, attacker.getCombatingEntity());
 		resetAfterAttack(attacker);
@@ -224,6 +213,8 @@ public class Combat {
 		if (attacker.getAttackType() == Entity.AttackTypes.MAGIC) {
 			int startGraphicId = player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getGraphicId();
 			projectileId = player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getProjectileId();
+			hit = new HitDelay(player, attacker, victim, 1, ((((calculateProjectileSpeed(attacker, victim) + 3) / 9) / 3)), 
+					player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getEndGraphicId());
 			if (startGraphicId != 0)
 				attacker.getUpdateFlags().sendHighGraphic(startGraphicId, 0);
 		}
@@ -231,8 +222,9 @@ public class Combat {
 			int projectileData[] = player.getRanged().getArrowProjectileData();
 			projectileId = projectileData[2];
 			attacker.getUpdateFlags().sendHighGraphic(projectileData[1], 0);
+			hit = new HitDelay(player, attacker, victim, 1, ((((calculateProjectileSpeed(attacker, victim) + 3) / 9) / 3)), 
+					0);
 		}
-		hit = new HitDelay(player, attacker, victim, 1, ((((calculateProjectileSpeed(attacker, victim) + 3) / 9) / 3)));
 		if (projectileId != 0) {
 			World.sendProjectile(attacker.getPosition(), offsetX, offsetY, projectileId, 43, 31, 
 			calculateProjectileSpeed(attacker, victim), victim instanceof Npc ? victim.getIndex() + 1 : victim.getIndex() - 1);

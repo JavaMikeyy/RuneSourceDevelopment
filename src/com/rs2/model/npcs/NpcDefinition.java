@@ -7,6 +7,7 @@ public class NpcDefinition {
 	private int id;
 	private String name;
 	private int maxHp;
+	private int[] combatLevels;
 	private int attackAnim;
 	private int defenceAnim;
 	private boolean isAttackable;
@@ -36,6 +37,14 @@ public class NpcDefinition {
 		return name;
 	}
 
+	public void setCombatLevel(int combatId, int combatLevel) {
+		this.combatLevels[combatId] = combatLevel;
+	}
+
+	public int getCombatLevel(int combatId) {
+		return combatLevels[combatId];
+	}
+	
 	public void setMaxHp(int maxHp) {
 		this.maxHp = maxHp;
 	}

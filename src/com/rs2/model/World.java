@@ -61,6 +61,7 @@ public class World {
 				continue;
 			}
 			try {
+				//player.getCombat().combatTick(player);
 				player.process();
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -75,6 +76,7 @@ public class World {
 				continue;
 			}
 			try {
+				//npc.getCombat().combatTick(npc);
 				npc.process();
 			} catch (Exception ex) {
 				ex.printStackTrace();

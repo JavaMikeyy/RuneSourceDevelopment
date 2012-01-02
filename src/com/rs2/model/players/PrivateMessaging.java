@@ -18,7 +18,7 @@ public class PrivateMessaging {
 	}
 	
 	public void refresh() {
-		/*for (int i = 0; i < player.getFriends().length; i ++) {
+		for (int i = 0; i < player.getFriends().length; i ++) {
 			if (player.getFriends()[i] == 0) {
 				continue;
 			}
@@ -39,11 +39,11 @@ public class PrivateMessaging {
 			if (players.getPrivateMessaging().contains(players.getFriends(), name)) {
 				players.getActionSender().sendFriendList(name, world);
 			}
-		}*/
+		}
 	}
 	
 	public void addToFriendsList(long name) {
-		/*if (getCount(player.getFriends()) >= 200) {
+		if (getCount(player.getFriends()) >= 200) {
 			player.getActionSender().sendMessage("Your friends list is full.");
 			return;
 		}
@@ -53,11 +53,11 @@ public class PrivateMessaging {
 		}
 		int slot = getFreeSlot(player.getFriends());
 		player.getFriends()[slot] = name;
-		player.getActionSender().sendFriendList(name, getWorld(name));*/
+		player.getActionSender().sendFriendList(name, getWorld(name));
 	}
 	
 	public void addToIgnoresList(long name) {
-		/*if (getCount(player.getIgnores()) >= 100) {
+		if (getCount(player.getIgnores()) >= 100) {
 			player.getActionSender().sendMessage("Your ignores list is full.");
 			return;
 		}
@@ -66,65 +66,65 @@ public class PrivateMessaging {
 			return;
 		}
 		int slot = getFreeSlot(player.getIgnores());
-		player.getIgnores()[slot] = name;*/
+		player.getIgnores()[slot] = name;
 	}
 	
 	public void sendPrivateMessage(Player from, long to, byte[] message,
 			int messageSize) {
-		/*for (Player p : World.getPlayers()) {
+		for (Player p : World.getPlayers()) {
 			if (p != null) {
 				if (NameUtil.nameToLong(p.getUsername()) == to) {
 					p.getActionSender().sendPrivateMessage(NameUtil.nameToLong(from.getUsername()),
 							from.getStaffRights(), message, messageSize);
 				}
 			}
-		}*/
+		}
 	}
 	
 	public void removeFromList(long[] person, long name) {
-		/*for (int i = 0; i < person.length; i ++) {
+		for (int i = 0; i < person.length; i ++) {
 			if (person[i] == name) {
 				person[i] = 0;
 			}
-		}*/
+		}
 	}
 	
 	private int getWorld(long friend) {
-		/*for (Player p : World.getPlayers()) {
+		for (Player p : World.getPlayers()) {
 			if (p != null) {
 				if (NameUtil.nameToLong(p.getUsername()) == friend) {
 					return 1;
 				}
 			}
-		}*/
+		}
 		return 0;
 	}
 	
 	public boolean contains(long[] person, long name) {
-		/*for (int i = 0; i < person.length; i++) {
+		for (int i = 0; i < person.length; i++) {
 			if (person[i] == name) {
 				return true;
 			}
-		}*/
+		}
 		return false;
 	}
 	
 	public int getCount(long[] name) {
-		/*int count = 0;
+		int count = 0;
 		for (long names : name) {
 			if (names > 0) {
 				count ++;
 			}
-		}*/
-		return 0;
+		}
+		return count;
 	}
 	
 	public int getFreeSlot(long[] person) {
-		/*for (int i = 0; i < person.length; i ++) {
+		for (int i = 0; i < person.length; i ++) {
 			if (person[i] == 0) {
 				return i;
 			}
-		}*/
+		}
 		return -1;
 	}
 

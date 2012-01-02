@@ -5,6 +5,7 @@ import com.rs2.model.players.Player;
 import com.rs2.net.StreamBuffer;
 import com.rs2.net.packet.Packet;
 import com.rs2.net.packet.PacketManager.PacketHandler;
+import com.rs2.util.plugin.PluginManager;
 
 public class WalkPacketHandler implements PacketHandler {
 	
@@ -26,6 +27,7 @@ public class WalkPacketHandler implements PacketHandler {
 			player.getSkill().setStopSkillTick(true);
 			player.setInstigatingAttack(false);
 			player.getFollowing().resetFollow(player);
+			PluginManager.reset();
 		}
 		if (player.isFrozen()) {
 			player.getActionSender().sendMessage("You are frozen and cannot move!");

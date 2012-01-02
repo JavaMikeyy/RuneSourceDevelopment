@@ -33,6 +33,7 @@ import com.rs2.model.players.Player;
 import com.rs2.net.packet.PacketManager;
 import com.rs2.util.Misc;
 import com.rs2.util.XStreamUtil;
+import com.rs2.util.plugin.PluginManager;
 
 /**
  * The main core of RuneSource.
@@ -91,10 +92,10 @@ public class Server implements Runnable {
 	public void run() {
 		try {
 			//System.setOut(new Misc.TimestampLogger(System.out, "./logs/out.log"));
-			System.setErr(new Misc.TimestampLogger(System.err, "./data/err.log"));
+			//System.setErr(new Misc.TimestampLogger(System.err, "./logs/err.log"));
 
 			address = new InetSocketAddress(host, port);
-			System.out.println("Starting Azure on " + address + "...");
+			System.out.println("Starting " + Constants.SERVER_NAME + " on " + address + "...");
 			
 			PacketManager.loadPackets();
 			
@@ -105,6 +106,9 @@ public class Server implements Runnable {
 			
 			// load all xstream related files.
 			XStreamUtil.loadAllFiles();
+			
+			// Load plugins
+			PluginManager.loadPlugins();
 
 			// Start up and get a'rollin!
 			startup();
@@ -116,6 +120,8 @@ public class Server implements Runnable {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		
+		PluginManager.close();
 	}
 
 	/**
@@ -169,7 +175,7 @@ public class Server implements Runnable {
 			socket.configureBlocking(false);
 			SelectionKey key = socket.register(selector, SelectionKey.OP_READ);
 			Player player = new Player(key);
-			//System.out.println("Accepted " + player + ".");
+			System.out.println("Accepted " + player + ".");
 			playerMap.put(key, player);
 		}
 	}
@@ -197,6 +203,7 @@ public class Server implements Runnable {
 
 		// Next, perform game processing.
 		try {
+			PluginManager.tick();
 			World.process();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -210,7 +217,7 @@ public class Server implements Runnable {
 	 */
 	private void sleep() throws InterruptedException {
 		long sleepTime = cycleRate - cycleTimer.elapsed();
-		//System.out.println("Sleep time: " + sleepTime + " with " + World.playerAmount() + " players online.");
+		System.out.println("Sleep time: " + sleepTime + " with " + World.playerAmount() + " players online.");
 		if (sleepTime > 0) {
 			Thread.sleep(sleepTime);
 		} else {

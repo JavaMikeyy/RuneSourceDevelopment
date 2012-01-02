@@ -6,6 +6,7 @@ import com.rs2.model.players.WalkToActions.Actions;
 import com.rs2.net.StreamBuffer;
 import com.rs2.net.packet.Packet;
 import com.rs2.net.packet.PacketManager.PacketHandler;
+import com.rs2.util.plugin.PluginManager;
 
 public class ObjectPacketHandler implements PacketHandler {
 	
@@ -51,9 +52,10 @@ public class ObjectPacketHandler implements PacketHandler {
 		player.setClickX(packet.getIn().readShort(true, StreamBuffer.ValueType.A, StreamBuffer.ByteOrder.LITTLE));
 		player.setClickId(packet.getIn().readShort());
 		player.setClickY(packet.getIn().readShort(StreamBuffer.ValueType.A));
+		if (!PluginManager.onPacketArrival(player, packet))
+			return;
 		WalkToActions.setActions(Actions.OBJECT_FIRST_CLICK);
 		WalkToActions.doActions(player);
-		System.out.println(player.getClickId());
 	}
 	
 	private void handleSecondClick(Player player, Packet packet) {

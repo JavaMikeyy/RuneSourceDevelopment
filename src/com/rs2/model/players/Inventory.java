@@ -33,7 +33,7 @@ public class Inventory {
 		if (item == null) {
 			return;
 		}
-		if (itemContainer.freeSlot() == -1) {
+		if (itemContainer.freeSlot() == -1 && !itemContainer.hasRoomFor(item)) {
 			player.getActionSender().sendMessage("Not enough space in your inventory.");
 			return;
 		}

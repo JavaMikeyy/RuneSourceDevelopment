@@ -20,8 +20,8 @@ public class ItemManager {
 	private static ItemManager instance = new ItemManager();
 	
 	private List<GroundItem> groundItems;
-	private ItemDefinition[] itemDefinitions;
-	private EquipmentDefinition[] equipmentDefinition;
+	private static ItemDefinition[] itemDefinitions;
+	private static EquipmentDefinition[] equipmentDefinition;
 	private Player owner;
 	
 	public void startup() {
@@ -250,7 +250,7 @@ public class ItemManager {
 		this.itemDefinitions = itemDefinitions;
 	}
 
-	public ItemDefinition[] getItemDefinitions() {
+	public static ItemDefinition[] getItemDefinitions() {
 		return itemDefinitions;
 	}
 

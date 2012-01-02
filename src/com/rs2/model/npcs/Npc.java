@@ -48,6 +48,7 @@ public class Npc extends Entity {
 		hiddenTimer = definition.getHiddenTimer();
 		respawnTimer = definition.getRespawnTimer();
 		initAttributes();
+		setAttackType(AttackTypes.MELEE);
 	}
 	
 	@Override

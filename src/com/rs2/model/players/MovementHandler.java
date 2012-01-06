@@ -58,9 +58,10 @@ public class MovementHandler {
     }
 	
 	public void process() {
+		if (player.isDead())
+			return;
 		Point walkPoint = null;
 		Point runPoint = null;
-
 		// Handle the movement.
 		walkPoint = waypoints.poll();
 		if (isRunToggled() || isRunPath()) {
@@ -152,7 +153,7 @@ public class MovementHandler {
 	 * @param y
 	 *            the Y coordinate
 	 */
-	private void addStep(int x, int y) {
+	public void addStep(int x, int y) {
 		if (waypoints.size() >= 100) {
 			return;
 		}

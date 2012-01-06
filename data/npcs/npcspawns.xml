@@ -2,21 +2,110 @@
 	<npc>
 		<npcId>316</npcId>
 		<position>
-			<x>2966</x>
-			<y>3387</y>
+			<x>2839</x>
+			<y>3431</y>
 			<z>0</z>
 		</position>
 		<walkType>STAND</walkType>
-		<minWalk>
-			<x>0</x>
-			<y>0</y>
+	</npc>
+	<npc>
+		<npcId>317</npcId>
+		<position>
+			<x>2836</x>
+			<y>3431</y>
 			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>0</x>
-			<y>0</y>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>321</npcId>
+		<position>
+			<x>2837</x>
+			<y>3431</y>
 			<z>0</z>
-		</maxWalk>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>313</npcId>
+		<position>
+			<x>2838</x>
+			<y>3431</y>
+			<z>0</z>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>1174</npcId>
+		<position>
+			<x>2844</x>
+			<y>3429</y>
+			<z>0</z>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>553</npcId>
+		<position>
+			<x>3084</x>
+			<y>3489</y>
+			<z>0</z>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>550</npcId>
+		<position>
+			<x>3084</x>
+			<y>3490</y>
+			<z>0</z>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>546</npcId>
+		<position>
+			<x>3084</x>
+			<y>3488</y>
+			<z>0</z>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>538</npcId>
+		<position>
+			<x>3084</x>
+			<y>3491</y>
+			<z>0</z>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>571</npcId>
+		<position>
+			<x>3084</x>
+			<y>3492</y>
+			<z>0</z>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>599</npcId>
+		<position>
+			<x>3079</x>
+			<y>3499</y>
+			<z>0</z>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>1597</npcId>
+		<position>
+			<x>3086</x>
+			<y>3498</y>
+			<z>0</z>
+		</position>
+		<walkType>WALK</walkType>
 	</npc>
 	<npc>
 		<npcId>2244</npcId>
@@ -26,16 +115,6 @@
 			<z>0</z>
 		</position>
 		<walkType>STAND</walkType>
-		<minWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</maxWalk>
 	</npc>
 	<npc>
 		<npcId>494</npcId>
@@ -45,224 +124,59 @@
 			<z>0</z>
 		</position>
 		<walkType>WALK</walkType>
-		<minWalk>
-			<x>2960</x>
-			<y>3376</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>2965</x>
-			<y>3379</y>
-			<z>0</z>
-		</maxWalk>
-	</npc>
-	<npc>
-		<npcId>317</npcId>
-		<position>
-			<x>2965</x>
-			<y>3387</y>
-			<z>0</z>
-		</position>
-		<walkType>STAND</walkType>
-		<minWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</maxWalk>
-	</npc>
-	<npc>
-		<npcId>321</npcId>
-		<position>
-			<x>2964</x>
-			<y>3387</y>
-			<z>0</z>
-		</position>
-		<walkType>STAND</walkType>
-		<minWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</maxWalk>
-	</npc>
-	<npc>
-		<npcId>313</npcId>
-		<position>
-			<x>2963</x>
-			<y>3387</y>
-			<z>0</z>
-		</position>
-		<walkType>STAND</walkType>
-		<minWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</maxWalk>
-	</npc>
-	<npc>
-		<npcId>1174</npcId>
-		<position>
-			<x>2962</x>
-			<y>3387</y>
-			<z>0</z>
-		</position>
-		<walkType>STAND</walkType>
-		<minWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</maxWalk>
 	</npc>
 	<npc>
 		<npcId>1</npcId>
 		<position>
-			<x>2963</x>
-			<y>3382</y>
+			<x>2965</x>
+			<y>3380</y>
 			<z>0</z>
 		</position>
-		<walkType>STAND</walkType>
-		<minWalk>
-			<x>2966</x>
-			<y>3382</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>2966</x>
-			<y>3382</y>
-			<z>0</z>
-		</maxWalk>
+		<walkType>WALK</walkType>
 	</npc>
 	<npc>
-		<npcId>1</npcId>
+		<npcId>2</npcId>
 		<position>
 			<x>2967</x>
 			<y>3382</y>
 			<z>0</z>
 		</position>
 		<walkType>STAND</walkType>
-		<minWalk>
-			<x>2966</x>
-			<y>3382</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>2966</x>
-			<y>3382</y>
-			<z>0</z>
-		</maxWalk>
 	</npc>
 	<npc>
 		<npcId>521</npcId>
 		<position>
-			<x>3212</x>
-			<y>3247</y>
+			<x>3081</x>
+			<y>3512</y>
 			<z>0</z>
 		</position>
-		<walkType>STAND</walkType>
-		<minWalk>
-			<x>3208</x>
-			<y>3243</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>3216</x>
-			<y>3251</y>
-			<z>0</z>
-		</maxWalk>
+		<walkType>WALK</walkType>
 	</npc>
 	<npc>
 		<npcId>520</npcId>
 		<position>
-			<x>3209</x>
-			<y>3247</y>
+			<x>3079</x>
+			<y>3511</y>
 			<z>0</z>
 		</position>
-		<walkType>STAND</walkType>
-		<minWalk>
-			<x>3205</x>
-			<y>3243</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>3213</x>
-			<y>3251</y>
-			<z>0</z>
-		</maxWalk>
-	</npc>
-	<npc>
-		<npcId>546</npcId>
-		<position>
-			<x>3203</x>
-			<y>3435</y>
-			<z>0</z>
-		</position>
-		<walkType>STAND</walkType>
-		<minWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</maxWalk>
+		<walkType>WALK</walkType>
 	</npc>
 	<npc>
 		<npcId>494</npcId>
 		<position>
-			<x>3184</x>
-			<y>3447</y>
+			<x>3096</x>
+			<y>3496</y>
 			<z>0</z>
 		</position>
-		<walkType>STAND</walkType>
-		<minWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</maxWalk>
+		<walkType>WALK</walkType>
 	</npc>
 	<npc>
 		<npcId>1</npcId>
 		<position>
-			<x>3222</x>
-			<y>3222</y>
+			<x>3091</x>
+			<y>3486</y>
 			<z>0</z>
 		</position>
-		<walkType>STAND</walkType>
-		<minWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</minWalk>
-		<maxWalk>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</maxWalk>
+		<walkType>WALK</walkType>
 	</npc>
 </list>

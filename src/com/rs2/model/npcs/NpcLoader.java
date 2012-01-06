@@ -24,6 +24,7 @@ import java.util.List;
 import com.rs2.model.Position;
 import com.rs2.model.World;
 import com.rs2.util.XStreamUtil;
+import com.rs2.Constants;
 
 /**
  * Having anything to do with any type of npc data loading.
@@ -40,8 +41,12 @@ public class NpcLoader {
 			Npc npc = new Npc(def, spawn.getNpcId());
 			npc.setPosition(spawn.getPosition());
 			npc.setSpawnPosition(spawn.getPosition());
-			npc.setMinWalk(new Position(spawn.getMinWalk().getX(), spawn.getMinWalk().getY()));
-			npc.setMaxWalk(new Position(spawn.getMaxWalk().getX(), spawn.getMaxWalk().getY()));
+			//npc.setMinWalk(new Position(spawn.getMinWalk().getX(), spawn.getMinWalk().getY()));
+			//npc.setMaxWalk(new Position(spawn.getMaxWalk().getX(), spawn.getMaxWalk().getY()));
+			npc.setMinWalk(new Position(spawn.getPosition().getX() - Constants.NPC_WALK_DISTANCE, spawn.getPosition().getY() - 
+					Constants.NPC_WALK_DISTANCE));
+			npc.setMaxWalk(new Position(spawn.getPosition().getX() + Constants.NPC_WALK_DISTANCE, spawn.getPosition().getY() + 
+					Constants.NPC_WALK_DISTANCE));
 			npc.setWalkType(spawn.getWalkType());
 			npc.setCurrentX(spawn.getPosition().getX());
 			npc.setCurrentY(spawn.getPosition().getY());

@@ -1,12 +1,11 @@
 Global sounds with volume based on distance.
 Make the punishment system add your name to the list when you get punished, not on login. 
 ^. And make it check your punishment status and remove the index if your clear of punishments.
-applyDeath() in the Player class causes concurrent modification exceptions.
 Finish teleports.
 Finish XML combat stuff.
 Verify the client with a string check through the magic id.
 Fix offset animation to graphic on wave spells.
-
-cool interfaces..
-PARENT: 11877 - MSG: null [11877] snow
-PARENT: 18220 - MSG: You are here [18267] canoe travel
+Fix ancient height graphics.
+Add magic formulas, and review all of them.
+Review fishing and cooking Formulas.
+Re-do the sound system on the 317 client to do distance sound.

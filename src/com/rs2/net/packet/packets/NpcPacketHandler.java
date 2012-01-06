@@ -69,6 +69,7 @@ public class NpcPacketHandler implements PacketHandler {
 		player.setClickY(npc.getPosition().getY());
 		player.setTarget(npc);
 		player.setInstigatingAttack(true);
+		player.setFollowingEntity(npc);
 	}
 	
 	private void handleMagicOnNpc(final Player player, Packet packet) {

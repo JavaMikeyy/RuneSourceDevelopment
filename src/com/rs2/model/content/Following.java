@@ -5,6 +5,8 @@ import com.rs2.model.players.Player;
 import com.rs2.model.npcs.Npc;
 import com.rs2.model.Entity;
 import com.rs2.model.World;
+import com.rs2.util.clip.Region;
+import com.rs2.util.clip.PathFinder;
 
 /**
   * By Mikey` of Rune-Server
@@ -53,7 +55,8 @@ public class Following {
 	  * An entity following another entity.
 	  */
 	public void followEntity(Entity follower) {
-		if (outOfRange(follower.getFollowingEntity(), follower)) {
+		if (outOfRange(follower.getFollowingEntity(), follower) ||
+				follower.getFollowingEntity().isDead()) {
 			resetFollow(follower);
 			return;
 		}
@@ -65,11 +68,13 @@ public class Following {
 			return;
 		}
 		if (follower instanceof Player && follower.isInstigatingAttack() 
-		&& player.getCombat().withinRange(follower, follower.getFollowingEntity())) {
+		&& player.getCombat().withinRange(follower, follower.getFollowingEntity())
+		&& Misc.getDistance(follower.getFollowingEntity().getPosition(), follower.getPosition()) != 0) {
 			return;
 		}
 		else if (follower instanceof Npc && follower.isInstigatingAttack() 
-		&& npc.getCombat().withinRange(follower, follower.getFollowingEntity())) {
+		&& npc.getCombat().withinRange(follower, follower.getFollowingEntity())
+		&& Misc.getDistance(follower.getFollowingEntity().getPosition(), follower.getPosition()) != 0) {
 			return;
 		}
 		int direction = calculateWalkPath(follower);
@@ -104,6 +109,23 @@ public class Following {
 				npc.getUpdateFlags().faceEntity(follower.getFollowingEntity().getIndex() + 32768);
 			else
 				npc.getUpdateFlags().faceEntity(follower.getFollowingEntity().getIndex());
+			if (Region.tileClipped(npc.getPosition(), COORDINATE_MODIFIERS[direction][0], COORDINATE_MODIFIERS[direction][1], 
+					0, false)) {
+				direction = PathFinder.checkDirection(npc.getPosition(), direction, false);
+				System.out.println("to " + direction);
+				if (Region.tileClipped(npc.getPosition(), COORDINATE_MODIFIERS[direction][0], 
+						COORDINATE_MODIFIERS[direction][1], 
+						0, false)) {
+					direction = PathFinder.checkDirection(npc.getPosition(), direction, true);
+					System.out.println("to " + direction);
+					if (Region.tileClipped(npc.getPosition(), COORDINATE_MODIFIERS[direction][0], 
+							COORDINATE_MODIFIERS[direction][1], 
+							0, false)) {
+						System.out.println("false");
+						return;
+					}
+				}
+			}
 			npc.setPrimaryDirection(direction);
 			xModifier = COORDINATE_MODIFIERS[direction][0];
 			yModifier = COORDINATE_MODIFIERS[direction][1];
@@ -118,6 +140,7 @@ public class Following {
 		int followerX = follower.getPosition().getX(), followerY = follower.getPosition().getY();
 		int leaderX = follower.getFollowingEntity().getPosition().getX(), 
 		leaderY = follower.getFollowingEntity().getPosition().getY();
+		int height = follower.getFollowingEntity().getPosition().getZ();
 		if (leaderX == followerX && leaderY == followerY) {
 			switch (Misc.randomNumber(2)) {
 				case 0:
@@ -126,22 +149,30 @@ public class Following {
 					return 6;
 			}
 		}
-		if (leaderX > followerX && leaderY == followerY) 
+		if (leaderX > followerX && leaderY == followerY) {
 			return 4;
-		if (leaderX == followerX && leaderY > followerY) 
+		}
+		if (leaderX == followerX && leaderY > followerY) {
 			return 1;
-		if (leaderX < followerX && leaderY == followerY) 
+		}
+		if (leaderX < followerX && leaderY == followerY) {
 			return 3;
-		if (leaderX == followerX && leaderY < followerY) 
+		}
+		if (leaderX == followerX && leaderY < followerY) { 
 			return 6;
-		if (leaderX > followerX && leaderY > followerY) 
+		}
+		if (leaderX > followerX && leaderY > followerY) {
 			return 2;
-		if (leaderX < followerX && leaderY < followerY) 
+		}
+		if (leaderX < followerX && leaderY < followerY) {
 			return 5;
-		if (leaderX > followerX && leaderY < followerY) 
+		}
+		if (leaderX > followerX && leaderY < followerY) {
 			return 7;
-		if (leaderX < followerX && leaderY > followerY) 
+		}
+		if (leaderX < followerX && leaderY > followerY) {
 			return 0;
+		}
 		return -1;
 	}
 	

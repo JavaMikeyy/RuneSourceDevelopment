@@ -20,7 +20,6 @@ public abstract class GlobalPlugin extends AbstractPlugin {
 	 * Called every server tick (600ms).
 	 */
 	public void onTick() {
-		
 	}
 	
 }

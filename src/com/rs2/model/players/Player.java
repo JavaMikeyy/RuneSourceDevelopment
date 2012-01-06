@@ -60,6 +60,7 @@ import com.rs2.util.PlayerSave;
 import com.rs2.util.PunishmentManager;
 import com.rs2.util.plugin.LocalPlugin;
 import com.rs2.util.plugin.PluginManager;
+import com.rs2.util.clip.Region;
 
 /**
  * Represents a logged-in player.
@@ -106,6 +107,7 @@ public class Player extends Entity {
 	private Genie genie = new Genie(this);
 	private Pets pets = new Pets(this);
 	private Crafting crafting = new Crafting(this);
+	private Slayer slayer = new Slayer(this);
 	private Dialogue dialogue = new Dialogue(this);
 	private Questing questing = new Questing(this);
 	private Following following = new Following(this);
@@ -168,6 +170,7 @@ public class Player extends Entity {
 	private int musicVolume = 0;
 	private int effectVolume = 0;
 	private int questPoints = 0;
+	private Object[] slayerTask = {"", -1};
 	private List<LocalPlugin> plugins = new ArrayList<LocalPlugin>();
 	
 	private static Object[][] staff = {
@@ -229,20 +232,19 @@ public class Player extends Entity {
 	@Override
 	public void process() {
 		// If no packet for more than 5 seconds, disconnect.
-		/*if (getTimeoutStopwatch().elapsed() > 5000) {
+		if (getTimeoutStopwatch().elapsed() > 5000) {
 			System.out.println(this + " timed out.");
 			disconnect();
 			return;
-		}*/
+		}
 		if (applyDeathTimer > -1) {
 			applyDeathTimer --;
 			applyDeath();
 		}
+		movementHandler.process();
 		getFollowing().followTick(this);
 		getCombat().combatTick(this);
-		movementHandler.process();
 		Skulling.skullTick(this);
-		
 		for (LocalPlugin lp : plugins) {
 			lp.onTick();
 		}
@@ -486,6 +488,22 @@ public class Player extends Entity {
 		}
 		if (keyword.equals("setconfig")) {
 			actionSender.sendConfig(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+		}
+		if (keyword.equals("north")) {
+			actionSender.sendMessage("" + Region.blockedNorth(getPosition().getX(), getPosition().getY(), getPosition().getZ(), false));
+		}
+		if (keyword.equals("east")) {
+			actionSender.sendMessage("" + Region.blockedEast(getPosition().getX(), getPosition().getY(), getPosition().getZ(), false));
+		}
+		if (keyword.equals("south")) {
+			actionSender.sendMessage("" + Region.blockedSouth(getPosition().getX(), getPosition().getY(), getPosition().getZ(), false));
+		}
+		if (keyword.equals("west")) {
+			actionSender.sendMessage("" + Region.blockedWest(getPosition().getX(), getPosition().getY(), getPosition().getZ(), false));
+		}
+		if (keyword.equals("clip")) {
+			actionSender.sendMessage("" + Region.tileClipped(getPosition(), Integer.parseInt(args[0]), Integer.parseInt(args[1]), 
+					0, false));
 		}
 		if (keyword.equals("banuser") && getStaffRights() >= 2) {
 			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.BAN, true, args[1].toLowerCase());
@@ -1064,6 +1082,10 @@ public class Player extends Entity {
 		return crafting;
 	}
 	
+	public Slayer getSlayer() {
+		return slayer;
+	}
+	
 	public SkillInterfaces getSkillInterfaces() {
 		return skillInterfaces;
 	}
@@ -1407,6 +1429,23 @@ public class Player extends Entity {
 	
 	public void removePlugin(LocalPlugin lp) {
 		plugins.remove(lp);
+	}
+	
+	public void setSlayerTask(Object[] newTask) {
+		this.slayerTask = newTask;
+	}
+	
+	public void killedSlayerNpc() {
+		this.slayerTask[1] = ((Integer) slayerTask[1] - 1);
+		if ((Integer) slayerTask[1] <= 0) {
+			Object[] blankTask = {"", -1};
+			setSlayerTask(blankTask);
+			actionSender.sendMessage("You've completed your slayer task. Return to Vanakka for another.");
+		}
+	}
+	
+	public Object[] getSlayerTask() {
+		return slayerTask;
 	}
 	
 	public enum MagicBookTypes {

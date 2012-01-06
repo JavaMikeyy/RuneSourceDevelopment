@@ -34,6 +34,8 @@ import com.rs2.net.packet.PacketManager;
 import com.rs2.util.Misc;
 import com.rs2.util.XStreamUtil;
 import com.rs2.util.plugin.PluginManager;
+import com.rs2.util.clip.ObjectDef;
+import com.rs2.util.clip.Region;
 
 /**
  * The main core of RuneSource.
@@ -110,6 +112,9 @@ public class Server implements Runnable {
 			// Load plugins
 			PluginManager.loadPlugins();
 
+			ObjectDef.loadConfig();
+			Region.load();
+			
 			// Start up and get a'rollin!
 			startup();
 			System.out.println("Online!");
@@ -217,7 +222,7 @@ public class Server implements Runnable {
 	 */
 	private void sleep() throws InterruptedException {
 		long sleepTime = cycleRate - cycleTimer.elapsed();
-		System.out.println("Sleep time: " + sleepTime + " with " + World.playerAmount() + " players online.");
+		//System.out.println("Sleep time: " + sleepTime + " with " + World.playerAmount() + " players online.");
 		if (sleepTime > 0) {
 			Thread.sleep(sleepTime);
 		} else {

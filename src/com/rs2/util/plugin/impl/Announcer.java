@@ -6,8 +6,8 @@ import com.rs2.util.plugin.GlobalPlugin;
 
 public class Announcer extends GlobalPlugin {
 	
-	private static final String MESSAGE = "Support open-source development..";
-	private static final String MESSAGE2 = "donate to metallic_mike@yahoo.com (via paypal).";
+	private static final String MESSAGE = "Support open-source development.";
+	private static final String MESSAGE2 = "Donate to metallic_mike@yahoo.com (via paypal).";
 	private int timer = 0;
 	
 	@Override
@@ -19,8 +19,8 @@ public class Announcer extends GlobalPlugin {
 		for (Player p : World.getPlayers()) {
 			if (p != null) {
 				log("Announcing...");
-				p.getActionSender().sendMessage("[Announcement] " + MESSAGE);
-				p.getActionSender().sendMessage("[Announcement] " + MESSAGE2);
+				p.getActionSender().sendMessage(MESSAGE);
+				p.getActionSender().sendMessage(MESSAGE2);
 				timer = 50;
 			}
 		}

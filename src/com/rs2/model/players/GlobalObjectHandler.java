@@ -37,7 +37,7 @@ public class GlobalObjectHandler {
 				continue;
 			}
 			for (GlobalObject object : objects) {
-				if (Misc.getDistance(players.getPosition(), object.getPosition()) <= 16) {
+				if (object.getPosition().isViewableFrom(player.getPosition())) {
 					players.getActionSender().sendObject(object);
 				}
 			}

@@ -4,9 +4,9 @@
 		<name>Man</name>
 		<maxHp>7</maxHp>
 		<combatLevels>
-			<int>999</int>
-			<int>999</int>
-			<int>999</int>
+			<int>5</int>
+			<int>5</int>
+			<int>5</int>
 			<int>1</int>
 			<int>1</int>
 			<int>1</int>
@@ -24,7 +24,88 @@
 		<hitTimer>4</hitTimer>
 		<attackSpeed>4</attackSpeed>
 		<size>1</size>
-		<maxHit>20</maxHit>
+		<maxHit>2</maxHit>
+	</npcdef>
+	<npcdef>
+		<id>2</id>
+		<name>Man</name>
+		<maxHp>7</maxHp>
+		<combatLevels>
+			<int>5</int>
+			<int>5</int>
+			<int>5</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+		</combatLevels>
+		<attackAnim>422</attackAnim>
+		<defenceAnim>424</defenceAnim>
+		<attackType>MELEE</attackType>
+		<isAttackable>true</isAttackable>
+		<attackStyles>
+		</attackStyles>
+		<deathAnimation>2304</deathAnimation>
+		<respawnTimer>10</respawnTimer>
+		<hiddenTimer>6</hiddenTimer>
+		<hitTimer>4</hitTimer>
+		<attackSpeed>4</attackSpeed>
+		<size>1</size>
+		<maxHit>2</maxHit>
+	</npcdef>
+	<npcdef>
+		<id>1597</id>
+		<name>Vannaka</name>
+		<maxHp>0</maxHp>
+		<combatLevels>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+		</combatLevels>
+		<attackAnim>0</attackAnim>
+		<defenceAnim>0</defenceAnim>
+		<attackType>MELEE</attackType>
+		<isAttackable>false</isAttackable>
+		<attackStyles>
+		</attackStyles>
+		<deathAnimation>0</deathAnimation>
+		<respawnTimer>0</respawnTimer>
+		<hiddenTimer>0</hiddenTimer>
+		<hitTimer>0</hitTimer>
+		<attackSpeed>0</attackSpeed>
+		<size>1</size>
+		<maxHit>0</maxHit>
+	</npcdef>
+	<npcdef>
+		<id>2478</id>
+		<name>Evil Bob</name>
+		<maxHp>0</maxHp>
+		<combatLevels>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+		</combatLevels>
+		<attackAnim>0</attackAnim>
+		<defenceAnim>0</defenceAnim>
+		<attackType>MELEE</attackType>
+		<isAttackable>false</isAttackable>
+		<attackStyles>
+		</attackStyles>
+		<deathAnimation>0</deathAnimation>
+		<respawnTimer>0</respawnTimer>
+		<hiddenTimer>0</hiddenTimer>
+		<hitTimer>0</hitTimer>
+		<attackSpeed>0</attackSpeed>
+		<size>1</size>
+		<maxHit>0</maxHit>
 	</npcdef>
 	<npcdef>
 		<id>409</id>
@@ -270,6 +351,33 @@
 		<maxHit>0</maxHit>
 	</npcdef>
 	<npcdef>
+		<id>599</id>
+		<name>Make-over mage</name>
+		<maxHp>0</maxHp>
+		<combatLevels>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+		</combatLevels>
+		<attackAnim>422</attackAnim>
+		<defenceAnim>402</defenceAnim>
+		<attackType>MELEE</attackType>
+		<isAttackable>false</isAttackable>
+		<attackStyles>
+		</attackStyles>
+		<deathAnimation>2304</deathAnimation>
+		<respawnTimer>10</respawnTimer>
+		<hiddenTimer>6</hiddenTimer>
+		<hitTimer>2</hitTimer>
+		<attackSpeed>4</attackSpeed>
+		<size>1</size>
+		<maxHit>2</maxHit>
+	</npcdef>
+	<npcdef>
 		<id>546</id>
 		<name>Zaff</name>
 		<maxHp>0</maxHp>
@@ -295,6 +403,114 @@
 		<attackSpeed>4</attackSpeed>
 		<size>1</size>
 		<maxHit>2</maxHit>
+	</npcdef>
+	<npcdef>
+		<id>571</id>
+		<name>Baker</name>
+		<maxHp>0</maxHp>
+		<combatLevels>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+		</combatLevels>
+		<attackAnim>422</attackAnim>
+		<defenceAnim>402</defenceAnim>
+		<attackType>MELEE</attackType>
+		<isAttackable>false</isAttackable>
+		<attackStyles>
+		</attackStyles>
+		<deathAnimation>2304</deathAnimation>
+		<respawnTimer>10</respawnTimer>
+		<hiddenTimer>6</hiddenTimer>
+		<hitTimer>2</hitTimer>
+		<attackSpeed>4</attackSpeed>
+		<size>1</size>
+		<maxHit>2</maxHit>
+	</npcdef>
+	<npcdef>
+		<id>538</id>
+		<name>Peksa</name>
+		<maxHp>0</maxHp>
+		<combatLevels>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+		</combatLevels>
+		<attackAnim>422</attackAnim>
+		<defenceAnim>402</defenceAnim>
+		<attackType>MELEE</attackType>
+		<isAttackable>false</isAttackable>
+		<attackStyles>
+		</attackStyles>
+		<deathAnimation>2304</deathAnimation>
+		<respawnTimer>10</respawnTimer>
+		<hiddenTimer>6</hiddenTimer>
+		<hitTimer>2</hitTimer>
+		<attackSpeed>4</attackSpeed>
+		<size>1</size>
+		<maxHit>2</maxHit>
+	</npcdef>
+	<npcdef>
+		<id>553</id>
+		<name>Aubury</name>
+		<maxHp>0</maxHp>
+		<combatLevels>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+		</combatLevels>
+		<attackAnim>0</attackAnim>
+		<defenceAnim>0</defenceAnim>
+		<attackType>MELEE</attackType>
+		<isAttackable>false</isAttackable>
+		<attackStyles>
+		</attackStyles>
+		<deathAnimation>0</deathAnimation>
+		<respawnTimer>0</respawnTimer>
+		<hiddenTimer>0</hiddenTimer>
+		<hitTimer>0</hitTimer>
+		<attackSpeed>0</attackSpeed>
+		<size>1</size>
+		<maxHit>0</maxHit>
+	</npcdef>
+	<npcdef>
+		<id>550</id>
+		<name>Lowe</name>
+		<maxHp>0</maxHp>
+		<combatLevels>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+		</combatLevels>
+		<attackAnim>0</attackAnim>
+		<defenceAnim>0</defenceAnim>
+		<attackType>MELEE</attackType>
+		<isAttackable>false</isAttackable>
+		<attackStyles>
+		</attackStyles>
+		<deathAnimation>0</deathAnimation>
+		<respawnTimer>0</respawnTimer>
+		<hiddenTimer>0</hiddenTimer>
+		<hitTimer>0</hitTimer>
+		<attackSpeed>0</attackSpeed>
+		<size>1</size>
+		<maxHit>0</maxHit>
 	</npcdef>
 	<npcdef>
 		<id>494</id>

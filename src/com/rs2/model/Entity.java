@@ -131,6 +131,24 @@ public abstract class Entity {
 		return 0;
 	}
 	
+	public int getMagicMaxHit() {
+		if (this instanceof Player) {
+			Player player = (Player) this;
+			return player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getMaxHit();
+		}
+		return 0;
+	}
+	
+	public void appendSlayerTask(String npcName, int npcHp) {
+		if (this instanceof Player) {
+			Player player = (Player) this;
+			if (npcName.equalsIgnoreCase((String) player.getSlayerTask()[1])) {
+				player.killedSlayerNpc();
+				player.getSkill().addExp(18, (npcHp / 10) == 0 ? 1 : (npcHp / 10));
+			}
+		}
+	}
+	
 	public void setIndex(int index) {
 		this.index = index;
 	}

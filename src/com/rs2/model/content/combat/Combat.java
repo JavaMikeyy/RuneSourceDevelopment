@@ -45,8 +45,6 @@ public class Combat {
 				attackEntity(entity, entity.getTarget());
 		if (entity.getCombatTimer() > 0)
 			entity.setCombatTimer(entity.getCombatTimer() - 1);
-		if (entity.getCombatTimer() == 0 && entity.getCombatingEntity() != null)
-			resetCombat(entity);
 	}
 	
 	/**
@@ -120,7 +118,6 @@ public class Combat {
 	 */
 	public boolean meetsAttackRequirements(Entity attacker, Entity victim) {
 		if (victim.isDead() || attacker.isDead() || victim == null) {
-			resetCombat(attacker);
 			attacker.setInstigatingAttack(false);
 			attacker.setFollowingEntity(null);
 			return false;

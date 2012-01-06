@@ -67,7 +67,7 @@ public class Login {
 			// Validate the client version.
 			int clientVersion = in.readInt();
 			if (clientVersion != Constants.CLIENT_VERSION + 689263) {
-				//player.setReturnCode(Constants.LOGIN_RESPONSE_UPDATED);
+				player.setReturnCode(Constants.LOGIN_RESPONSE_UPDATED);
 			}
 
 			in.readByte(); // Skip the high/low memory version.

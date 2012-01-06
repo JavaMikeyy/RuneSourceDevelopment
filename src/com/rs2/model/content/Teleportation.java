@@ -3,6 +3,8 @@ package com.rs2.model.content;
 import com.rs2.model.World;
 import com.rs2.model.tick.Tick;
 import com.rs2.model.players.Player;
+import com.rs2.util.clip.Region;
+import com.rs2.util.Misc;
 
 /**
   * By Mikey` of Rune-Server
@@ -13,7 +15,7 @@ public class Teleportation {
 	private static final int[][] TELEPORTS =
 	{
 	//Varrock
-	{4140}
+	{4140, 3086, 3488, 0}, {4143, 2804, 3434, 0}
 	};
 	
 	private boolean teleportDeclared = false;
@@ -54,10 +56,18 @@ public class Teleportation {
 	}
 	
 	public void activateTeleportButton(int buttonId) {
-		for(int i = 0; i < TELEPORTS.length; i++) {
-			if (buttonId == TELEPORTS[i][0]) {
-				teleport(3029, 4840, 0);
-				return;
+		if (!teleportDeclared) {
+			for(int i = 0; i < TELEPORTS.length; i++) {
+				if (buttonId == TELEPORTS[i][0]) {
+					int teleX = TELEPORTS[i][1] + Misc.randomNumber(3);
+					int teleY = TELEPORTS[i][2] + Misc.randomNumber(3);
+					while (Region.getClipping(teleX, teleY, TELEPORTS[i][3]) != 0) {
+						teleX = TELEPORTS[i][1] + Misc.randomNumber(3);
+						teleY = TELEPORTS[i][2] + Misc.randomNumber(3);
+					}
+					teleport(teleX, teleY, TELEPORTS[i][3]);
+					return;
+				}
 			}
 		}
 	}

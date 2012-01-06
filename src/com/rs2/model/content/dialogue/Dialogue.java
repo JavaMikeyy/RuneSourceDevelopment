@@ -4,6 +4,7 @@ import com.rs2.util.Misc;
 import com.rs2.model.World;
 import com.rs2.model.npcs.NpcDefinition;
 import com.rs2.model.players.Player;
+import com.rs2.model.content.dialogue.impl.*;
 
 /**
   * By Mikey` of Rune-Server
@@ -25,9 +26,6 @@ public class Dialogue {
 	private int nextDialogue = 0; //Used to tell what the next option will be
 	private int optionId = 0; //Used to tell what the optionId is, so we can have different actions for the same option button
 	
-	private Banker banker = new Banker();
-	private MiscDialogue miscDialogue = new MiscDialogue();
-	
 	private static final String[] RANDOM_NPC_CHAT =
 	{
 		"What a beautiful day we're having.", "Nice to meet you.", 
@@ -36,11 +34,79 @@ public class Dialogue {
 	
 	public void sendDialogue(int dialogueId) {//Left off at: 8
 		player.getQuesting().sendQuestDialogue(dialogueId);
-		miscDialogue.sendDialogue(player, dialogueId);
-		banker.sendDialogue(player, dialogueId);
+		MiscDialogue.sendDialogue(player, dialogueId);
+		Banker.sendDialogue(player, dialogueId);
+		SlayerMaster.sendDialogue(player, dialogueId);
 		if (dialogueId == 1) {
 			sendNpcChat1(RANDOM_NPC_CHAT[Misc.randomNumber(RANDOM_NPC_CHAT.length)], CONTENT);
 			nextDialogue = 0;
+		}
+	}
+	
+	/**
+	  * The buttons for the option interfaces.
+	  */
+	public void optionButtons(int buttonId) {
+		switch (buttonId) {//optionInterface, optionId
+			case 9157://2options, option1
+				switch (optionId) {
+					case 1:
+						Banker.sendDialogue(player, 4);
+						break;
+					case 2:
+						sendDialogue(11);
+						break;
+				}
+				break;
+			case 9158://2options, option2
+				switch (optionId) {
+					case 1:
+						Banker.sendDialogue(player, 6);
+						break;
+					case 2:
+						sendDialogue(12);
+						break;
+				}
+				break;
+			case 9167://3options, option1
+				switch (optionId) {
+					case 3:
+						SlayerMaster.sendDialogue(player, 24);
+						break;
+				}
+				break;
+			case 9168://3options, option2
+				switch (optionId) {
+					case 3:
+						SlayerMaster.sendDialogue(player, 26);
+						break;
+				}
+				break;
+			case 9169://3options, option3
+				switch (optionId) {
+					case 3:
+						SlayerMaster.sendDialogue(player, 30);
+						break;
+				}
+				break;
+			case 9178://4options, option1
+				break;
+			case 9179://4options, option2
+				break;
+			case 9180://4options, option3
+				break;
+			case 9181://4options, option4
+				break;
+			case 9190://5options, option1
+				break;
+			case 9191://5options, option2
+				break;
+			case 9192://5options, option3
+				break;
+			case 9193://5options, option4
+				break;
+			case 9194://5options, option5
+				break;
 		}
 	}
 	
@@ -336,58 +402,6 @@ public class Dialogue {
 		player.getActionSender().sendString(line4, 11890);
 		player.getActionSender().sendPlayerDialogueHead(11885);
 		player.getActionSender().sendChatInterface(11884);
-	}
-	
-	/**
-	  * The buttons for the option interfaces.
-	  */
-	public void optionButtons(int buttonId) {
-		switch (buttonId) {//optionInterface, optionId
-			case 9157://2options, option1
-				switch (optionId) {
-					case 1:
-						banker.sendDialogue(player, 4);
-						break;
-					case 2:
-						sendDialogue(11);
-						break;
-				}
-				break;
-			case 9158://2options, option2
-				switch (optionId) {
-					case 1:
-						banker.sendDialogue(player, 6);
-						break;
-					case 2:
-						sendDialogue(12);
-						break;
-				}
-				break;
-			case 9167://3options, option1
-				break;
-			case 9168://3options, option2
-				break;
-			case 9169://3options, option3
-				break;
-			case 9178://4options, option1
-				break;
-			case 9179://4options, option2
-				break;
-			case 9180://4options, option3
-				break;
-			case 9181://4options, option4
-				break;
-			case 9190://5options, option1
-				break;
-			case 9191://5options, option2
-				break;
-			case 9192://5options, option3
-				break;
-			case 9193://5options, option4
-				break;
-			case 9194://5options, option5
-				break;
-		}
 	}
 	
 	public void setNextDialogue(int nextDialogue) {

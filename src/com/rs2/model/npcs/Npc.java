@@ -1,6 +1,7 @@
 package com.rs2.model.npcs;
 
 import com.rs2.util.Misc;
+import com.rs2.util.clip.Region;
 import com.rs2.model.Entity;
 import com.rs2.model.Position;
 import com.rs2.model.World;
@@ -61,6 +62,8 @@ public class Npc extends Entity {
 		getFollowing().followTick(this);
 		if (getCombatTimer() == 0)
 			sendNpcWalk();
+		else
+			System.out.println("" + getCombatingEntity());
 		if (needsRespawn) {
 			respawnTimer --;
 		}
@@ -73,6 +76,9 @@ public class Npc extends Entity {
 				needsRespawn = true;
 				isVisible = false;
 				getUpdateFlags().setUpdateRequired(true);
+				System.out.println("" + definition.getName());
+				getCombatingEntity().appendSlayerTask(definition.getName(), definition.getMaxHp());
+				combat.resetCombat(this);
 			}
 			if (respawnTimer <= 0 && !isVisible && needsRespawn) {
 				getPosition().setAs(spawnPosition);
@@ -133,9 +139,11 @@ public class Npc extends Entity {
 			yModifier = coordinateModifiers[direction][1];
 			if (minWalk.getX() <= (currentX + xModifier) && minWalk.getY() <= (currentY + yModifier) &&
 			maxWalk.getX() >= (currentX + xModifier) && maxWalk.getY() >= (currentY + yModifier)) {
-				primaryDirection = direction;
-				appendNpcPosition(xModifier, yModifier);
-				getUpdateFlags().faceEntity(65535);
+				if (!Region.tileClipped(new Position(currentX, currentY), xModifier, yModifier, 0, false)) {
+					primaryDirection = direction;
+					appendNpcPosition(xModifier, yModifier);
+					getUpdateFlags().faceEntity(65535);
+				}
 			}
 		}
 	}

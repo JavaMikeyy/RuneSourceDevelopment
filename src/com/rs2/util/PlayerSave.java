@@ -70,6 +70,8 @@ public class PlayerSave {
 		write.writeInt(player.getMusicVolume());
 		write.writeInt(player.getEffectVolume());
 		write.writeInt(player.getQuestPoints());
+		write.writeUTF((String) player.getSlayerTask()[0]);
+		write.writeInt((Integer) player.getSlayerTask()[1]);
 		for (int i = 0; i < player.getQuesting().questData.length; i ++) {
 			write.writeInt((Integer) player.getQuesting().questData[i][1]);
 		}
@@ -159,6 +161,8 @@ public class PlayerSave {
 		player.setMusicVolume(load.readInt());
 		player.setEffectVolume(load.readInt());
 		player.setQuestPoints(load.readInt());
+		Object[] slayerTask = {load.readUTF(), load.readInt()};
+		player.setSlayerTask(slayerTask);
 		for (int i = 0; i < player.getQuesting().questData.length; i ++) {
 			player.getQuesting().questData[i][1] = load.readInt();
 		}

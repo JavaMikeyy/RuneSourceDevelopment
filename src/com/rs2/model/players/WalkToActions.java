@@ -124,6 +124,9 @@ public class WalkToActions {
 					case 2244:
 						player.getDialogue().sendDialogue(8);
 						break;
+					case 1597:
+						player.getDialogue().sendDialogue(22);
+						break;
 					default:
 						player.getDialogue().sendDialogue(1);
 						break;

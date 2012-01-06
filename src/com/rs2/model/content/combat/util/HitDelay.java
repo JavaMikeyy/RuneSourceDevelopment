@@ -30,7 +30,15 @@ public class HitDelay {
 			@Override
 			public void execute() {
 				int hit = DetermineHit.determineHit(attacker, victim);
-				victim.hit(hit, hit == 0 ? 0 : 1);
+				if (hit == 0 && attacker.getAttackType() == Entity.AttackTypes.MAGIC) {
+					victim.getUpdateFlags().sendHighGraphic(629, 0);
+					player.getCombat().completeDelayedHit(attacker, victim);
+					stop();
+					return;
+				}
+				else {
+					victim.hit(hit, hit == 0 ? 0 : 1);
+				}
 				player.getCombat().completeDelayedHit(attacker, victim);
 				if (endGraphic != 0) {
 					if (attacker.getAttackType() == Entity.AttackTypes.MAGIC) {

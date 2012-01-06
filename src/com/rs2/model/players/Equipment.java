@@ -153,6 +153,8 @@ public class Equipment {
 		}
 		refresh();
 		player.getMagic().setAutoCasting(false, 0);
+		player.setInstigatingAttack(false);
+		player.setFollowingEntity(null);
 		player.getInventory().refresh();
 		player.setAppearanceUpdateRequired(true);
 		sendBonus(player);

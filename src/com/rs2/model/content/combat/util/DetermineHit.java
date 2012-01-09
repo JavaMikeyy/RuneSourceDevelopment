@@ -12,8 +12,6 @@ public class DetermineHit {
 		if (attacker.getAttackType() == Entity.AttackTypes.MAGIC) {
 			double accuracy = getMagicAccuracy(attacker, victim);
 			int chance = Misc.randomNumber(100);
-			System.out.println("" + accuracy + " " + chance);
-			System.out.println("" + attacker);
 			if (chance > accuracy)
 				return 0;
 			else
@@ -22,7 +20,6 @@ public class DetermineHit {
 		else if (attacker.getAttackType() == Entity.AttackTypes.RANGED) {
 			double accuracy = getRangedAccuracy(attacker, victim);
 			int chance = Misc.randomNumber(100);
-			System.out.println("" + accuracy + " " + chance);
 			if (chance > accuracy)
 				return 0;
 			else
@@ -31,8 +28,6 @@ public class DetermineHit {
 		else if (attacker.getAttackType() == Entity.AttackTypes.MELEE) {
 			double accuracy = getMeleeAccuracy(attacker, victim);
 			int chance = Misc.randomNumber(100);
-			System.out.println("" + accuracy + " " + chance);
-			System.out.println("" + attacker);
 			if (chance > accuracy)
 				return 0;
 			else
@@ -67,8 +62,6 @@ public class DetermineHit {
 
 		double hitChance = effectiveAttack * (1 + attackBonus / 20);
 		double blockChance = effectiveDefense * (1 + defenceBonus / 64);
-		System.out.println("hitChance " + hitChance);
-		System.out.println("blockChance " + blockChance);
 		if(hitChance < blockChance)
 			return ((hitChance - 1) / (1.8 * blockChance)) * 100;
 		else
@@ -94,8 +87,6 @@ public class DetermineHit {
 
 		double hitChance = effectiveRanged * (1 + rangedBonus / 40);
 		double blockChance = effectiveDefense * (1 + defenceBonus / 190);
-		System.out.println("hitChance " + hitChance);
-		System.out.println("blockChance " + blockChance);
 		if(hitChance < blockChance)
 			return ((hitChance - 1) / (1.8 * blockChance)) * 100;
 		else
@@ -119,8 +110,6 @@ public class DetermineHit {
 		
 		double hitChance = effectiveMagic * (1 + magicBonus / 64);
 		double blockChance = effectiveDefense * (1 + defenceBonus / 64);
-		System.out.println("hitChance " + hitChance);
-		System.out.println("blockChance " + blockChance);
 		if(hitChance < blockChance)
 			return ((hitChance - 1) / (1.8 * blockChance)) * 100;
 		else

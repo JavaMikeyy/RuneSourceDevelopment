@@ -130,6 +130,7 @@ public class Player extends Entity {
 	private int clickY;
 	private int clickId;
 	private int miscId;
+	private int npcClickIndex;
 	private boolean withdrawAsNote;
 	private int enterXId;
 	private int enterXSlot;
@@ -148,6 +149,7 @@ public class Player extends Entity {
 	private TradeStage tradeStage = TradeStage.WAITING;
 	private int[] pendingItems = new int[Inventory.SIZE];
 	private int[] pendingItemsAmount = new int[Inventory.SIZE];
+	private boolean usingShop = false;
 	private int energy = 100;
 	private int weight = 5;
 	private boolean needsPlacement;
@@ -157,6 +159,7 @@ public class Player extends Entity {
 	private int skullIcon = -1;
 	private int skullTimer = -1;
 	private int applyDeathTimer = -1;
+	private int serverPoints = 0;
 	private boolean[] isUsingPrayer = new boolean[26];
 	private int prayerDrainTimer = 6;
 	private MagicBookTypes magicBookType = MagicBookTypes.MODERN;
@@ -185,6 +188,7 @@ public class Player extends Entity {
 		setAppearanceUpdateRequired(false);
 		setResetMovementQueue(false);
 		setNeedsPlacement(false);
+		setUsingShop(false);
 	}
 	
 	@Override
@@ -472,6 +476,9 @@ public class Player extends Entity {
 			setDead(true);
 			applyDeath();
 		}
+		if (keyword.equals("points")) {
+			serverPoints = 1000;
+		}
 		if (keyword.equals("max")) {
 			for (int i = 0; i < 7; i++)
 				skill.addExp(i, 14000000);
@@ -504,6 +511,9 @@ public class Player extends Entity {
 		if (keyword.equals("clip")) {
 			actionSender.sendMessage("" + Region.tileClipped(getPosition(), Integer.parseInt(args[0]), Integer.parseInt(args[1]), 
 					0, false));
+		}
+		if (keyword.equals("players")) {
+			actionSender.sendMessage("There are " + World.playerAmount() + " players online.");
 		}
 		if (keyword.equals("banuser") && getStaffRights() >= 2) {
 			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.BAN, true, args[1].toLowerCase());
@@ -902,6 +912,14 @@ public class Player extends Entity {
 		return miscId;
 	}
 	
+	public void setNpcClickIndex(int npcClickIndex) {
+		this.npcClickIndex = npcClickIndex;
+	}
+
+	public int getNpcClickIndex() {
+		return npcClickIndex;
+	}
+	
 	public void setWithdrawAsNote(boolean withdrawAsNote) {
 		this.withdrawAsNote = withdrawAsNote;
 	}
@@ -1174,6 +1192,14 @@ public class Player extends Entity {
 		return pendingItemsAmount;
 	}
 
+	public void setUsingShop(boolean usingShop) {
+		this.usingShop = usingShop;
+	}
+
+	public boolean usingShop() {
+		return usingShop;
+	}
+	
 	public void setEnergy(int energy) {
 		this.energy = energy;
 	}
@@ -1305,6 +1331,19 @@ public class Player extends Entity {
 
 	public int getSkullTimer() {
 		return skullTimer;
+	}
+	
+	public void addToServerPoints(int serverPoints) {
+		actionSender.sendMessage("You have recieved " + serverPoints + " server points!");
+		this.serverPoints += serverPoints;
+	}
+	
+	public void decreaseServerPoints(int serverPoints) {
+		this.serverPoints = (this.serverPoints - serverPoints);
+	}
+
+	public int getServerPoints() {
+		return serverPoints;
 	}
 	
 	public void setSkullIcon(int skullIcon) {

@@ -3,15 +3,21 @@ package com.rs2;
 public class Constants {
 	
 	public static final String SERVER_NAME = "RuneSource (Open-Source) - BETA";
+	public static final String[] MESSAGES_ON_LOGIN =
+	{
+		"Please refer to the advertisement thread for information on playing."
+	};
+	
 	
 	public static final int CLIENT_VERSION = 1;
 	
 	public static final int EXP_RATE = 1;
+	public static final int EXP_EVENT_BONUS = 1;
 	public static final int START_X = 3086;
 	public static final int START_Y = 3488;
 	public static final int START_Z = 0;
 	public static final int MAX_NPCS = 8192;
-	public static final int NPC_WALK_DISTANCE = 10;
+	public static final int NPC_WALK_DISTANCE = 6;
 	public static final int MAX_ITEMS = 11791;
 	public static final int MAX_ITEM_COUNT = Integer.MAX_VALUE;
 	public static final int GROUND_START_TIME = 200;

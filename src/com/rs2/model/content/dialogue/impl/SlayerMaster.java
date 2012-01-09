@@ -2,6 +2,8 @@ package com.rs2.model.content.dialogue.impl;
 
 import com.rs2.model.players.Player;
 import com.rs2.model.players.BankManager;
+import com.rs2.model.players.ShopManager;
+import com.rs2.util.Misc;
 
 /**
   * By Mikey` of Rune-Server
@@ -59,7 +61,11 @@ public class SlayerMaster {
 				player.getDialogue().setNextDialogue(29);
 				break;
 			case 29:
-				player.getDialogue().sendPlayerChat1("I'll get right on that!", player.getDialogue().CONTENT);
+				String[] randomNcpMessages = {
+					"Return to me afterwards for another, good luck."
+				};
+				player.getDialogue().sendNpcChat1(randomNcpMessages[Misc.randomNumber(randomNcpMessages.length)], 
+						player.getDialogue().CONTENT);
 				player.getDialogue().setNextDialogue(0);
 				break;
 			case 30:
@@ -67,10 +73,9 @@ public class SlayerMaster {
 				player.getDialogue().setNextDialogue(31);
 				break;
 			case 31:
-				//openshop
 				player.getDialogue().setNextDialogue(0);
+				ShopManager.openShop(player, 5);
 				break;
-			
 		}
 	}
 	

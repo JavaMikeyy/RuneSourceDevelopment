@@ -15,7 +15,7 @@ public class PathFinder {
 	public static int checkDirection(Position position, int direction,  boolean alternateRoute) {
 		boolean blocked = false;
 		int newDirection = direction;
-		switch (direction) {
+		/*switch (direction) {
 			case 0:
 				blocked = Region.blockedNorthWest(position.getX(), position.getY(), 0, false);
 				if (blocked && !alternateRoute)
@@ -56,8 +56,16 @@ public class PathFinder {
 				else if (blocked && alternateRoute)
 					newDirection = 6;
 				break;
-		}
+		}*/
 		return newDirection;
 	}
-
+	
+	public static boolean clipAllowsAttack(Position attackerPosition, Position defenderPosition) {
+		int xModifier = defenderPosition.getX() - attackerPosition.getX();
+		int yModifier = defenderPosition.getY() - attackerPosition.getY();
+		return ((Region.tileClipped(attackerPosition, xModifier, 
+					yModifier, attackerPosition.getZ(), false)));
+	}
 }
+
+

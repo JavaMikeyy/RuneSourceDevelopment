@@ -9,6 +9,7 @@ import com.rs2.model.Entity;
 import com.rs2.model.World;
 import com.rs2.model.tick.Tick;
 import com.rs2.util.Misc;
+import com.rs2.util.clip.PathFinder;
 
 /**
   * By Mikey` of Rune-Server
@@ -126,6 +127,8 @@ public class Combat {
 			AttackType.determineAttackType(player);
 			switch (attacker.getAttackType()) {
 				case MELEE:
+					if (PathFinder.clipAllowsAttack(attacker.getPosition(), victim.getPosition()))
+						return false;
 					break;
 				case RANGED:
 					player.getRanged().checkArrows();
@@ -138,6 +141,10 @@ public class Combat {
 				default:
 					break;
 			}
+		}
+		else {
+			if (PathFinder.clipAllowsAttack(attacker.getPosition(), victim.getPosition()))
+				return false;
 		}
 		if (!withinRange(attacker, victim))
 			return false;

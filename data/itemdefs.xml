@@ -89548,8 +89548,8 @@
 		<name>Gloves</name>
 		<lowAlchValue>0</lowAlchValue>
 		<highAlchValue>0</highAlchValue>
-		<shopBuyValue>0</shopBuyValue>
-		<shopSellValue>0</shopSellValue>
+		<shopBuyValue>5</shopBuyValue>
+		<shopSellValue>5</shopSellValue>
 		<marketPrice>0</marketPrice>
 		<stackable>false</stackable>
 		<note>false</note>

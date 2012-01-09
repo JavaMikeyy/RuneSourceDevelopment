@@ -1,0 +1,33 @@
+<list>
+	<potiondef>
+		<potionName>Strength potion</potionName>
+		<potionId>0</potionId>
+		<affectedStats>
+			<int>1</int>
+		</affectedStats>
+	</potiondef>
+</list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

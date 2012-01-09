@@ -42,8 +42,9 @@ public class NpcPacketHandler implements PacketHandler {
 		player.setClickId(npc.getNpcId());
 		player.setClickX(npc.getPosition().getX());
 		player.setClickY(npc.getPosition().getY());
+		player.setNpcClickIndex(npcSlot);
 		player.getUpdateFlags().faceEntity(npcSlot);
-		npc.getUpdateFlags().faceEntity(player.getIndex() + 32768);
+		//npc.getUpdateFlags().faceEntity(player.getIndex() + 32768);
 		WalkToActions.setActions(Actions.NPC_FIRST_CLICK);
 		WalkToActions.doActions(player);
 	}
@@ -54,8 +55,9 @@ public class NpcPacketHandler implements PacketHandler {
 		player.setClickId(npc.getNpcId());
 		player.setClickX(npc.getPosition().getX());
 		player.setClickY(npc.getPosition().getY());
+		player.setNpcClickIndex(npcSlot);
 		player.getUpdateFlags().faceEntity(npcSlot);
-		npc.getUpdateFlags().faceEntity(player.getIndex() + 32768);
+		//npc.getUpdateFlags().faceEntity(player.getIndex() + 32768);
 		WalkToActions.setActions(Actions.NPC_SECOND_CLICK);
 		WalkToActions.doActions(player);
 	}

@@ -26,19 +26,28 @@ public class Dialogue {
 	private int nextDialogue = 0; //Used to tell what the next option will be
 	private int optionId = 0; //Used to tell what the optionId is, so we can have different actions for the same option button
 	
-	private static final String[] RANDOM_NPC_CHAT =
+	private static final String[][] RANDOM_NPC_CHAT =
 	{
-		"What a beautiful day we're having.", "Nice to meet you.", 
-		"I sure hope it doesn't rain.. if that's possible."
+		{"The Zamorak wizard in Catherby can", "teleport you to the abyss."}, {"Nice to meet you."}, 
+		{"I sure hope it doesn't rain.. if that's possible."}, {"Vannaka can assign you a slayer task if you ask him."},
+		{"Please remember to report bugs."}
 	};
 	
-	public void sendDialogue(int dialogueId) {//Left off at: 8
+	public void sendDialogue(int dialogueId) {
 		player.getQuesting().sendQuestDialogue(dialogueId);
 		MiscDialogue.sendDialogue(player, dialogueId);
 		Banker.sendDialogue(player, dialogueId);
 		SlayerMaster.sendDialogue(player, dialogueId);
+		MakeOverMage.sendDialogue(player, dialogueId);
 		if (dialogueId == 1) {
-			sendNpcChat1(RANDOM_NPC_CHAT[Misc.randomNumber(RANDOM_NPC_CHAT.length)], CONTENT);
+			int chatIndex = Misc.randomNumber(RANDOM_NPC_CHAT.length);
+			String[] chatLine = RANDOM_NPC_CHAT[chatIndex];
+			if (RANDOM_NPC_CHAT[chatIndex].length == 2) {
+				sendNpcChat2(chatLine[0], chatLine[1], CONTENT);
+			}
+			else {
+				sendNpcChat1(chatLine[0], CONTENT);
+			}
 			nextDialogue = 0;
 		}
 	}
@@ -56,6 +65,9 @@ public class Dialogue {
 					case 2:
 						sendDialogue(11);
 						break;
+					case 4:
+						MakeOverMage.sendDialogue(player, 34);
+						break;
 				}
 				break;
 			case 9158://2options, option2
@@ -65,6 +77,9 @@ public class Dialogue {
 						break;
 					case 2:
 						sendDialogue(12);
+						break;
+					case 4:
+						MakeOverMage.sendDialogue(player, 37);
 						break;
 				}
 				break;

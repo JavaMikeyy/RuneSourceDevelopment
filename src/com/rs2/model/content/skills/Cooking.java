@@ -23,7 +23,7 @@ public class Cooking {
 	
 	public static final int[][] COOKING_OBJECTS =
 	{//id, anim
-	{2728, 883}
+	{2728, 883}, {2729, 883}, {2730, 883}, {2731, 883}, {2732, 897}
 	};
 	
 	public static final int[][] COOKING =

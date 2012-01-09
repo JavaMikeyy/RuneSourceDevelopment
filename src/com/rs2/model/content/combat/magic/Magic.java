@@ -37,7 +37,7 @@ public class Magic {
 	  */
 	public static final int[][] STAFFS =
 	{//runeId, staffId
-	{556, 1381}, {0, 4675}
+	{556, 1381}, {0, 4675}, {0, 2417}, {555, 1383}, {557, 1385}, {554, 1387}
 	};
 	
 	private int magicId, magicMaxHit, magicIndex, graphicId, animationId;

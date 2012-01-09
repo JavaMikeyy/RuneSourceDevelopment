@@ -1,4 +1,33 @@
 <list>
+	<!-- Catherby -->
+	<npc>
+		<npcId>494</npcId>
+		<position>
+			<x>2810</x>
+			<y>3444</y>
+			<z>0</z>
+		</position>
+		<walkType>WALK</walkType>
+	</npc>
+	<npc>
+		<npcId>494</npcId>
+		<position>
+			<x>2810</x>
+			<y>3444</y>
+			<z>0</z>
+		</position>
+		<walkType>WALK</walkType>
+	</npc>
+	<npc>
+		<npcId>521</npcId>
+		<position>
+			<x>2803</x>
+			<y>3430</y>
+			<z>0</z>
+		</position>
+		<walkType>WALK</walkType>
+	</npc>
+	<!-- Fishing Spot -->
 	<npc>
 		<npcId>316</npcId>
 		<position>
@@ -8,6 +37,7 @@
 		</position>
 		<walkType>STAND</walkType>
 	</npc>
+	<!-- Fishing Spot -->
 	<npc>
 		<npcId>317</npcId>
 		<position>
@@ -17,6 +47,7 @@
 		</position>
 		<walkType>STAND</walkType>
 	</npc>
+	<!-- Fishing Spot -->
 	<npc>
 		<npcId>321</npcId>
 		<position>
@@ -26,6 +57,7 @@
 		</position>
 		<walkType>STAND</walkType>
 	</npc>
+	<!-- Fishing Spot -->
 	<npc>
 		<npcId>313</npcId>
 		<position>
@@ -35,6 +67,7 @@
 		</position>
 		<walkType>STAND</walkType>
 	</npc>
+	<!-- Fishing Spot -->
 	<npc>
 		<npcId>1174</npcId>
 		<position>
@@ -44,6 +77,7 @@
 		</position>
 		<walkType>STAND</walkType>
 	</npc>
+	<!-- Edgeville -->
 	<npc>
 		<npcId>553</npcId>
 		<position>
@@ -89,6 +123,7 @@
 		</position>
 		<walkType>STAND</walkType>
 	</npc>
+	<!-- Make-over Mage -->
 	<npc>
 		<npcId>599</npcId>
 		<position>
@@ -96,8 +131,9 @@
 			<y>3499</y>
 			<z>0</z>
 		</position>
-		<walkType>STAND</walkType>
+		<walkType>WALK</walkType>
 	</npc>
+	<!-- Vannaka -->
 	<npc>
 		<npcId>1597</npcId>
 		<position>
@@ -116,6 +152,7 @@
 		</position>
 		<walkType>STAND</walkType>
 	</npc>
+	<!-- Banker -->
 	<npc>
 		<npcId>494</npcId>
 		<position>
@@ -124,24 +161,6 @@
 			<z>0</z>
 		</position>
 		<walkType>WALK</walkType>
-	</npc>
-	<npc>
-		<npcId>1</npcId>
-		<position>
-			<x>2965</x>
-			<y>3380</y>
-			<z>0</z>
-		</position>
-		<walkType>WALK</walkType>
-	</npc>
-	<npc>
-		<npcId>2</npcId>
-		<position>
-			<x>2967</x>
-			<y>3382</y>
-			<z>0</z>
-		</position>
-		<walkType>STAND</walkType>
 	</npc>
 	<npc>
 		<npcId>521</npcId>
@@ -161,6 +180,7 @@
 		</position>
 		<walkType>WALK</walkType>
 	</npc>
+	<!-- Banker -->
 	<npc>
 		<npcId>494</npcId>
 		<position>

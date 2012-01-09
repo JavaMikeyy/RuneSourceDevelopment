@@ -21,7 +21,7 @@ public class Announcer extends GlobalPlugin {
 				log("Announcing...");
 				p.getActionSender().sendMessage(MESSAGE);
 				p.getActionSender().sendMessage(MESSAGE2);
-				timer = 50;
+				timer = 300;
 			}
 		}
 	}

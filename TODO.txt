@@ -9,3 +9,4 @@ Fix ancient height graphics.
 Add magic formulas, and review all of them.
 Review fishing and cooking Formulas.
 Re-do the sound system on the 317 client to do distance sound.
+Add an infinity symbol for shops.

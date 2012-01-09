@@ -117,6 +117,8 @@ public class WalkToActions {
 				if (!player.getMovementHandler().walkToAction(new Position(x, y), 1)) {
 					return;
 				}
+				Npc npc = World.getNpcs()[player.getNpcClickIndex()];
+				npc.getUpdateFlags().faceEntity(player.getIndex() + 32768);
 				switch (player.getClickId()) {
 					case 494:
 						player.getDialogue().sendDialogue(2);
@@ -126,6 +128,9 @@ public class WalkToActions {
 						break;
 					case 1597:
 						player.getDialogue().sendDialogue(22);
+						break;
+					case 599:
+						player.getDialogue().sendDialogue(32);
 						break;
 					default:
 						player.getDialogue().sendDialogue(1);
@@ -147,9 +152,30 @@ public class WalkToActions {
 				if (!player.getMovementHandler().walkToAction(new Position(x, y), 1)) {
 					return;
 				}
+				Npc npc = World.getNpcs()[player.getNpcClickIndex()];
+				npc.getUpdateFlags().faceEntity(player.getIndex() + 32768);
 				switch (player.getClickId()) {
-				case 546:
+				case 571:
 					ShopManager.openShop(player, 0);
+					break;
+				case 553:
+					ShopManager.openShop(player, 1);
+					break;
+				case 546:
+					ShopManager.openShop(player, 2);
+					break;
+				case 550:
+					ShopManager.openShop(player, 3);
+					break;
+				case 538:
+					ShopManager.openShop(player, 4);
+					break;
+				case 1597:
+					ShopManager.openShop(player, 5);
+					break;
+				case 520:
+				case 521:
+					ShopManager.openShop(player, 6);
 					break;
 				}
 				actions = null;

@@ -222,7 +222,7 @@ public class ItemPacketHandler implements PacketHandler {
 	private void handlePacket145(Player player, Packet packet) {
 		int interfaceID = packet.getIn().readShort(StreamBuffer.ValueType.A);
 		int slot = packet.getIn().readShort(StreamBuffer.ValueType.A);
-		int itemId = packet.getIn().readShort(StreamBuffer.ValueType.A); // Item ID.
+		int itemId = packet.getIn().readShort(StreamBuffer.ValueType.A);
 		System.out.println(interfaceID + " " + itemId);
 		if (interfaceID == 1688) {
 			player.getEquipment().unequip(slot);
@@ -270,6 +270,8 @@ public class ItemPacketHandler implements PacketHandler {
 			BankManager.withdrawItem(player, slot, itemId, 10);
 		} else if (interfaceID == 3900) {
 			ShopManager.buyItem(player, slot, itemId, 5);
+		} else if (interfaceID == 3823) {
+			ShopManager.sellItem(player, slot, itemId, 5);
 		} else if (interfaceID == 3322) {
 			TradeManager.offerItem(player, slot, itemId, 10);
 		} else if(interfaceID == 3415) {
@@ -281,7 +283,7 @@ public class ItemPacketHandler implements PacketHandler {
         int slot = packet.getIn().readShort(StreamBuffer.ValueType.A);
         int interfaceID = packet.getIn().readShort();
         int itemId = packet.getIn().readShort(StreamBuffer.ValueType.A);
-        if (interfaceID == 5064) {
+		if (interfaceID == 5064) {
             BankManager.bankItem(player, slot, itemId, player.getInventory().getItemContainer().getCount(itemId));
         } else if (interfaceID == 5382) {
             int amount = 0;
@@ -294,7 +296,9 @@ public class ItemPacketHandler implements PacketHandler {
             BankManager.withdrawItem(player, slot, itemId, amount);
         } else if (interfaceID == 3900) {
             ShopManager.buyItem(player, slot, itemId, 10);
-        } else if (interfaceID == 3322) {
+        } else if (interfaceID == 3823) {
+			ShopManager.sellItem(player, slot, itemId, 10);
+		} else if (interfaceID == 3322) {
             TradeManager.offerItem(player, slot, itemId, player.getInventory().getItemContainer().getCount(itemId));
         } else if (interfaceID == 3415) {
             int amount = 0;

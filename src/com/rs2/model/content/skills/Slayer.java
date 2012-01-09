@@ -37,22 +37,31 @@ public class Slayer {
 	
 	public Object[] getSlayerTask() {
 		Object[] task = new Object[2]; 
-		int randomIndex;
+		int randomIndex, amountToSlay;
 		switch (taskLevel) {
 			case LOW:
 				randomIndex = Misc.randomNumber(LOW_LEVEL_NPCS.length);
 				task[0] = (String) LOW_LEVEL_NPCS[randomIndex][0];
-				task[1] = Misc.randomNumber(50);
+				amountToSlay = Misc.randomNumber(50);
+				if (amountToSlay < 20)
+					amountToSlay += 10;
+				task[1] = amountToSlay;
 				break;
 			case MEDIUM:
 				randomIndex = Misc.randomNumber(MEDIUM_LEVEL_NPCS.length);
 				task[0] = (String) MEDIUM_LEVEL_NPCS[randomIndex][0];
-				task[1] = Misc.randomNumber(50);
+				amountToSlay = Misc.randomNumber(50);
+				if (amountToSlay < 20)
+					amountToSlay += 10;
+				task[1] = amountToSlay;
 				break;
 			case HIGH:
 				randomIndex = Misc.randomNumber(HIGH_LEVEL_NPCS.length);
 				task[0] = (String) HIGH_LEVEL_NPCS[randomIndex][0];
-				task[1] = Misc.randomNumber(50);
+				amountToSlay = Misc.randomNumber(50);
+				if (amountToSlay < 20)
+					amountToSlay += 10;
+				task[1] = amountToSlay;
 				break;
 		}
 		player.setSlayerTask(task);

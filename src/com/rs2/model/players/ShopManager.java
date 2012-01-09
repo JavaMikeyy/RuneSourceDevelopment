@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.rs2.Constants;
+import com.rs2.model.players.Item;
 import com.rs2.model.players.container.Container;
 import com.rs2.model.players.container.Container.Type;
 import com.rs2.util.Misc;
@@ -13,7 +14,7 @@ import com.rs2.util.XStreamUtil;
 
 public class ShopManager {
 	
-	public static final int SIZE = 28;
+	public static final int SIZE = 40;
 	
 	private static List<Shop> shops = new ArrayList<Shop>(SIZE);
 	
@@ -36,18 +37,35 @@ public class ShopManager {
 	public static void buyItem(Player player, int slot, int shopItem, int amount) {
 		Shop shop = shops.get(player.getShopId());
 		Container inventory = player.getInventory().getItemContainer();
-		int currency = shop.getCurrency();
-		int value = ItemManager.getInstance().getItemValue(shopItem, "shopbuy");
 		Item item = shop.getCurrentStock().get(slot);
+		int currency, value;
+		if (shop.getCurrencyType() == Shop.CurrencyTypes.ITEM) {
+			currency = shop.getCurrency();
+		}
+		else {
+			currency = getCurrencyForShopType(player, shop);
+		}
 		if (amount < 1 || shopItem < 0) {
 			return;
 		}
-		if (inventory.getCount(currency) < value || !inventory.contains(currency)) {
-			player.getActionSender().sendMessage("You do not have enough coins to buy this item.");
-			return;
+		if (shop.getCurrencyType() == Shop.CurrencyTypes.ITEM) {
+			value = ItemManager.getInstance().getItemValue(shopItem, "shopbuy");
+			if (inventory.getCount(currency) < value || !inventory.contains(currency) && value > 0) {
+				player.getActionSender().sendMessage("You do not have enough " + ItemManager.getInstance().getItemName(currency) +
+						" to buy this item.");
+				return;
+			}
 		}
-		if (inventory.freeSlots() == -1) {
-			return;
+		else {
+			value = getSpecialShopPrice(player, shop, shopItem);
+			if (currency < (value * amount)) {
+				player.getActionSender().sendMessage("You do not have enough server points to buy this item.");
+				return;
+			}
+		}
+		if (!inventory.hasRoomFor(new Item(shopItem, amount))) {
+			amount = inventory.freeSlots();
+			player.getActionSender().sendMessage("You ran out of inventory space.");
 		}
 		if (shop.getCurrentStock().get(slot).getCount() < amount) {
 			amount = shop.getCurrentStock().get(slot).getCount();
@@ -58,26 +76,35 @@ public class ShopManager {
 				return;
 			}
 		}
-		for (int i = 0; i < amount; i ++) {
-			player.getInventory().removeItem(new Item(currency, value));
+		for (int i = 0; i < amount; i++) {
+			if (shop.getCurrencyType() == Shop.CurrencyTypes.ITEM) {
+				player.getInventory().removeItem(new Item(currency, value));
+			}
+			else {
+				decreaseCurrencyForSpecialShop(player, shop, value);
+			}
 		}
 		if (shop.getStock().contains(item.getId())) {
 			shop.getCurrentStock().removeOrZero(new Item(item.getId(), amount));
 		} else {
 			shop.getCurrentStock().remove(new Item(item.getId(), amount));
 		}
+		System.out.println("" + player.getServerPoints());
 		player.getInventory().addItem(new Item(shopItem, amount));
-		Item[] shopItems = shop.getCurrentStock().toArray();
 		player.getInventory().refresh(3823);
-		player.getActionSender().sendUpdateItems(3900, shopItems);
+		refresh(player, shop);
 	}
 	
 	public static void sellItem(Player player, int slot, int item, int amount) {
 		Shop shop = shops.get(player.getShopId());
 		Container inventory = player.getInventory().getItemContainer();
 		int currency = shop.getCurrency();
+		if (shop.getCurrencyType() != Shop.CurrencyTypes.ITEM) {
+			player.getActionSender().sendMessage("This shop can't buy anything.");
+			return;
+		}
 		int value = ItemManager.getInstance().getItemValue(item, "shopsell");
-		int transferAmount = inventory.getCount(item);
+		int totalItems = inventory.getCount(item);
 		if (amount < 1 || item < 0) {
 			return;
 		}
@@ -88,45 +115,93 @@ public class ShopManager {
 		if (!inventory.contains(item)) {
 			return;
 		}
-		if (transferAmount > amount) {
-			transferAmount = amount;
+		if (amount >= totalItems) {
+			amount = totalItems;
 		}
 		int shopAmount = shop.getCurrentStock().getCount(item);
+		player.getInventory().removeItem(new Item(item, amount));
+		if (ItemManager.getInstance().getItemValue(item, "shopbuy") > 0)
+					player.getInventory().addItem(new Item(currency, ItemManager.getInstance().getItemValue(item, "shopbuy") * amount));
 		if (shop.isGeneralStore()) {
 			if (shopAmount > 0) {
-				shop.getCurrentStock().set(shop.getCurrentStock().getSlotById(item), new Item(item, shopAmount + transferAmount));
+				shop.getCurrentStock().set(shop.getCurrentStock().getSlotById(item), new Item(item, shopAmount + amount));
 			} else {
-				shop.getCurrentStock().add(new Item(item, transferAmount));
+				shop.getCurrentStock().add(new Item(item, amount));
 			}
 		} else {
 			if (!shop.getStock().contains(item)) {
 				player.getActionSender().sendMessage("You cannot sell this item in this shop.");
 				return;
 			} else {
-				shop.getCurrentStock().set(shop.getCurrentStock().getSlotById(item), new Item(item, shopAmount + transferAmount));
+				shop.getCurrentStock().set(shop.getCurrentStock().getSlotById(item), new Item(item, shopAmount + amount));
 			}
 		}
-		for (int i = 0; i < transferAmount; i ++) {
-			player.getInventory().removeItemSlot(new Item(item, 1), slot);
-		}
-		if (value > 0) {
-			player.getInventory().addItem(new Item(currency, value));
-		}
-		Item[] shopItems = shop.getCurrentStock().toArray();
 		player.getInventory().refresh(3823);
-		player.getActionSender().sendUpdateItems(3900, shopItems);
+		refresh(player, shop);
 	}
 	
 	public static void getBuyValue(Player player, int id) {
-		int price = ItemManager.getInstance().getItemValue(id, "shopbuy");
-		player.getActionSender().sendMessage("" + ItemManager.getInstance().getItemName(id) + " currently costs " 
-				+ Misc.formatNumber(price) + " coins.");
+		Shop shop = shops.get(player.getShopId());
+		if (shop.getCurrencyType() == Shop.CurrencyTypes.ITEM) {
+			int price = ItemManager.getInstance().getItemValue(id, "shopbuy");
+			String currencyName = ItemManager.getInstance().getItemName(shop.getCurrency());
+			player.getActionSender().sendMessage("" + ItemManager.getInstance().getItemName(id) + ": currently costs " 
+					+ Misc.formatNumber(price) + " " + currencyName + ".");
+		}
+		else {
+			int price = getSpecialShopPrice(player, shop, id);
+			player.getActionSender().sendMessage("" + ItemManager.getInstance().getItemName(id) + ": currently costs " + 
+					price + " " + getCurrencyName(shop) + ".");
+		}
 	}
 	
 	public static void getSellValue(Player player, int id) {
-		int price = ItemManager.getInstance().getItemValue(id, "shopsell");
-		player.getActionSender().sendMessage("" + ItemManager.getInstance().getItemName(id) +": shop will buy for " 
-				+ Misc.formatNumber(price) + " coins.");
+		Shop shop = shops.get(player.getShopId());
+		if (shop.getCurrencyType() == Shop.CurrencyTypes.ITEM) {
+			int price = ItemManager.getInstance().getItemValue(id, "shopsell");
+			String currencyName = ItemManager.getInstance().getItemName(shop.getCurrency());
+			player.getActionSender().sendMessage("" + ItemManager.getInstance().getItemName(id) +": shop will buy for " 
+					+ Misc.formatNumber(price) + " " + getCurrencyName(shop) + ".");
+		}
+		else {
+			player.getActionSender().sendMessage("You cannot sell items to this shop.");
+		}
+	}
+	
+	public static int getCurrencyForShopType(Player player, Shop shop) {
+		switch (shop.getCurrencyType()) {
+			case SERVER_POINTS:
+				return player.getServerPoints();
+		}
+		return -1;
+	}
+	
+	public static int getSpecialShopPrice(Player player, Shop shop, int buyId) {
+		switch (shop.getCurrencyType()) {
+			case SERVER_POINTS:
+				switch (buyId) {
+					case 4152:
+						return 10;
+				}
+				break;
+		}
+		return 0;
+	}
+	
+	public static void decreaseCurrencyForSpecialShop(Player player, Shop shop, int value) {
+		switch (shop.getCurrencyType()) {
+			case SERVER_POINTS:
+				player.decreaseServerPoints(value);
+				break;
+		}
+	}
+	
+	public static String getCurrencyName(Shop shop) {
+		switch (shop.getCurrencyType()) {
+			case SERVER_POINTS:
+				return "Server Points";
+		}
+		return "Points";
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -157,12 +232,13 @@ public class ShopManager {
 		return shops;
 	}
 	
-	public class Shop {
+	public static class Shop {
 		
 		private int shopId;
 		private String name;
 		private Item[] items;
 		private boolean isGeneralStore;
+		private CurrencyTypes currencyType;
 		private int currency;
 		private Container stock;
 		private Container currentStock;
@@ -198,6 +274,10 @@ public class ShopManager {
 		public int getCurrency() {
 			return currency;
 		}
+		
+		public CurrencyTypes getCurrencyType() {
+			return currencyType;
+		}
 
 		public void setItems(Item[] items) {
 			this.items = items;
@@ -221,6 +301,10 @@ public class ShopManager {
 
 		public Container getCurrentStock() {
 			return currentStock;
+		}
+		
+		enum CurrencyTypes {
+			ITEM, SERVER_POINTS
 		}
 	}
 

@@ -111,8 +111,7 @@ public class Following {
 				npc.getUpdateFlags().faceEntity(follower.getFollowingEntity().getIndex());
 			if (Region.tileClipped(npc.getPosition(), COORDINATE_MODIFIERS[direction][0], COORDINATE_MODIFIERS[direction][1], 
 					0, false)) {
-				direction = PathFinder.checkDirection(npc.getPosition(), direction, false);
-				System.out.println("to " + direction);
+				/*direction = PathFinder.checkDirection(npc.getPosition(), direction, false);
 				if (Region.tileClipped(npc.getPosition(), COORDINATE_MODIFIERS[direction][0], 
 						COORDINATE_MODIFIERS[direction][1], 
 						0, false)) {
@@ -124,7 +123,8 @@ public class Following {
 						System.out.println("false");
 						return;
 					}
-				}
+				}*/
+				return;
 			}
 			npc.setPrimaryDirection(direction);
 			xModifier = COORDINATE_MODIFIERS[direction][0];
@@ -165,6 +165,7 @@ public class Following {
 			return 2;
 		}
 		if (leaderX < followerX && leaderY < followerY) {
+			System.out.println("" + 5);
 			return 5;
 		}
 		if (leaderX > followerX && leaderY < followerY) {

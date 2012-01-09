@@ -142,7 +142,7 @@ public abstract class Entity {
 	public void appendSlayerTask(String npcName, int npcHp) {
 		if (this instanceof Player) {
 			Player player = (Player) this;
-			if (npcName.equalsIgnoreCase((String) player.getSlayerTask()[1])) {
+			if (npcName.equalsIgnoreCase((String) player.getSlayerTask()[0])) {
 				player.killedSlayerNpc();
 				player.getSkill().addExp(18, (npcHp / 10) == 0 ? 1 : (npcHp / 10));
 			}

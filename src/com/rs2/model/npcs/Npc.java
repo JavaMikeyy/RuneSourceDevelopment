@@ -62,8 +62,6 @@ public class Npc extends Entity {
 		getFollowing().followTick(this);
 		if (getCombatTimer() == 0)
 			sendNpcWalk();
-		else
-			System.out.println("" + getCombatingEntity());
 		if (needsRespawn) {
 			respawnTimer --;
 		}

@@ -513,6 +513,33 @@
 		<maxHit>0</maxHit>
 	</npcdef>
 	<npcdef>
+		<id>548</id>
+		<name>Lowe</name>
+		<maxHp>0</maxHp>
+		<combatLevels>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+			<int>1</int>
+		</combatLevels>
+		<attackAnim>0</attackAnim>
+		<defenceAnim>0</defenceAnim>
+		<attackType>MELEE</attackType>
+		<isAttackable>false</isAttackable>
+		<attackStyles>
+		</attackStyles>
+		<deathAnimation>0</deathAnimation>
+		<respawnTimer>0</respawnTimer>
+		<hiddenTimer>0</hiddenTimer>
+		<hitTimer>0</hitTimer>
+		<attackSpeed>0</attackSpeed>
+		<size>1</size>
+		<maxHit>0</maxHit>
+	</npcdef>
+	<npcdef>
 		<id>494</id>
 		<name>Banker</name>
 		<maxHp>0</maxHp>

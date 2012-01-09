@@ -51,7 +51,7 @@ public class WoodcuttingPlugin extends LocalPlugin {
 	@Override
 	public boolean onPacketArrival(Packet packet) {
 		if (packet.getOpcode() == PACKET_CLICK_OBJECT) {
-			if (timer > 0) {
+			/*if (timer > 0) {
 				getPlayer().getUpdateFlags().sendAnimation(WOODCUTTING_ANIM_ID, 0); 
 			} else {
 				getPlayer().getUpdateFlags().sendAnimation(WOODCUTTING_ANIM_ID, 0); 
@@ -59,7 +59,7 @@ public class WoodcuttingPlugin extends LocalPlugin {
 				getPlayer().getInventory().addItem(new Item(1511));
 				getPlayer().getSkill().addExp(WOODCUTTING_SKILL_ID, 10000);
 				timer = 5;
-			}
+			}*/
 		}
 		return true;
 	}

@@ -38,7 +38,7 @@ public class Ranged {
 	
 	private final int[][] ARROW_PROJECTILE_DATA =
 	{//Arrow id, Gfx id, Projectile id
-	{882, 19, 10}, 
+	{78, 16, 25}, {882, 19, 10}, {884, 18, 9}, {886, 20, 11}, {888, 21, 12}, {890, 22, 13}, {892, 24, 15}
 	};
 	
 	private final int[][] THROWN_PROJECTILE_DATA =

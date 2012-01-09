@@ -25,7 +25,8 @@
 		<soundId>0</soundId>
 	</equip>
 	<equip>
-		<id>78</id><standAnim>0x328</standAnim>
+		<id>78</id>
+		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
 		<attackStyles>
@@ -37,21 +38,7 @@
 		<soundId>0</soundId>
 	</equip>
 	<equip>
-		<id>86</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
+		<id>86</id>		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -65,20 +52,6 @@
 	</equip>
 	<equip>
 		<id>87</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -92,20 +65,6 @@
 	</equip>
 	<equip>
 		<id>88</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -119,20 +78,6 @@
 	</equip>
 	<equip>
 		<id>89</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -146,20 +91,6 @@
 	</equip>
 	<equip>
 		<id>295</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -1415,20 +1346,7 @@
 	</equip>
 	<equip>
 		<id>841</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
+
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -1436,7 +1354,7 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>1764</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
@@ -1463,7 +1381,7 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>1764</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
@@ -1490,7 +1408,7 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>1764</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
@@ -1517,7 +1435,7 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>1764</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
@@ -1544,26 +1462,12 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>1764</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
 	<equip>
 		<id>851</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -1571,26 +1475,12 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>1764</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
 	<equip>
 		<id>853</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -1598,26 +1488,12 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>1764</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
 	<equip>
 		<id>855</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -1625,26 +1501,12 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>1764</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
 	<equip>
 		<id>857</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -1652,7 +1514,20 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>1764</interfaceId>
+		<specialAttackInterface>0</specialAttackInterface>
+		<soundId>0</soundId>
+	</equip>
+		<equip>
+		<id>861</id>
+		<standAnim>0x328</standAnim>
+		<walkAnim>0x333</walkAnim>f
+		<runAnim>0x338</runAnim>
+		<attackStyles>
+		</attackStyles>
+		<defenseAnim>0</defenseAnim>
+		<weaponSpeed>0</weaponSpeed>
+		<interfaceId>1764</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
@@ -1679,34 +1554,7 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
-		<specialAttackInterface>0</specialAttackInterface>
-		<soundId>0</soundId>
-	</equip>
-	<equip>
-		<id>861</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
-		<standAnim>0x328</standAnim>
-		<walkAnim>0x333</walkAnim>
-		<runAnim>0x338</runAnim>
-		<attackStyles>
-		</attackStyles>
-		<defenseAnim>0</defenseAnim>
-		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>1764</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
@@ -7139,25 +6987,25 @@
 	</equip>
 	<equip>
 		<id>1381</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
 		<attackStyles>
-			<accurate>424</accurate>
+		<accurate>424</accurate>
+		</attackStyles>
+		<defenseAnim>0</defenseAnim>
+		<weaponSpeed>0</weaponSpeed>
+		<interfaceId>328</interfaceId>
+		<specialAttackInterface>0</specialAttackInterface>
+		<soundId>0</soundId>
+	</equip>
+		<equip>
+		<id>2417</id>
+		<standAnim>0x328</standAnim>
+		<walkAnim>0x333</walkAnim>
+		<runAnim>0x338</runAnim>
+		<attackStyles>
+		<accurate>424</accurate>
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
@@ -7188,7 +7036,7 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>328</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
@@ -7215,7 +7063,7 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>328</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
@@ -7242,26 +7090,12 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>328</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
 	<equip>
 		<id>1389</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -7269,7 +7103,7 @@
 		</attackStyles>
 		<defenseAnim>0</defenseAnim>
 		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
+		<interfaceId>328</interfaceId>
 		<specialAttackInterface>0</specialAttackInterface>
 		<soundId>0</soundId>
 	</equip>
@@ -8759,48 +8593,7 @@
 		<soundId>0</soundId>
 	</equip>
 	<equip>
-		<id>2417</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
-		<standAnim>0x328</standAnim>
-		<walkAnim>0x333</walkAnim>
-		<runAnim>0x338</runAnim>
-		<attackStyles>
-		</attackStyles>
-		<defenseAnim>0</defenseAnim>
-		<weaponSpeed>0</weaponSpeed>
-		<interfaceId>0</interfaceId>
-		<specialAttackInterface>0</specialAttackInterface>
-		<soundId>0</soundId>
-	</equip>
-	<equip>
 		<id>2422</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>
@@ -8814,20 +8607,6 @@
 	</equip>
 	<equip>
 		<id>2425</id>
-		
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		
 		<standAnim>0x328</standAnim>
 		<walkAnim>0x333</walkAnim>
 		<runAnim>0x338</runAnim>

@@ -59,14 +59,19 @@ public class Combat {
 		if (!meetsAttackRequirements(attacker, victim)) {
 			return;
 		}
+		if (!SpecialAttack.specialActivated(attacker)) {
+			attacker.getUpdateFlags().sendAnimation(attacker.grabAttackAnimation(), 0);
+		}
 		if (attacker.getAttackType() == Entity.AttackTypes.MAGIC || attacker.getAttackType() == Entity.AttackTypes.RANGED)
 			sendProjectile(attacker, victim);
-		else if (attacker instanceof Player)
-			hit = new HitDelay(player, attacker, victim, 1, 1, 0);
+		else if (attacker instanceof Player) {
+			if (SpecialAttack.specialActivated(attacker))
+				SpecialAttack.performSpecialAttack(attacker, victim);
+			else
+				hit = new HitDelay(player, attacker, victim, 1, 0);
+		}
 		else if (attacker instanceof Npc)
-			hit = new HitDelay(npc, attacker, victim, 1, 1, 0);
-		
-		attacker.getUpdateFlags().sendAnimation(attacker.grabAttackAnimation(), 0);
+			hit = new HitDelay(npc, attacker, victim, 1, 0);
 		appendCombatTimers(attacker, victim);
 		attacker.setCombatingEntity(victim);
 		victim.setCombatingEntity(attacker);
@@ -98,7 +103,6 @@ public class Combat {
 		if (attacker instanceof Player) {
 			switch (attacker.getAttackType()) {
 			case MAGIC:
-				player.getMagic().applyMagicEffects(attacker, attacker.getCombatingEntity());
 				player.getMagic().resetMagic(attacker);
 				break;
 			}
@@ -217,7 +221,7 @@ public class Combat {
 		if (attacker.getAttackType() == Entity.AttackTypes.MAGIC) {
 			int startGraphicId = player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getGraphicId();
 			projectileId = player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getProjectileId();
-			hit = new HitDelay(player, attacker, victim, 1, ((((calculateProjectileSpeed(attacker, victim) + 3) / 9) / 3)), 
+			hit = new HitDelay(player, attacker, victim, ((((calculateProjectileSpeed(attacker, victim) + 3) / 9) / 3)), 
 					player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getEndGraphicId());
 			if (startGraphicId != 0)
 				attacker.getUpdateFlags().sendHighGraphic(startGraphicId, 0);
@@ -226,7 +230,7 @@ public class Combat {
 			int projectileData[] = player.getRanged().getArrowProjectileData();
 			projectileId = projectileData[2];
 			attacker.getUpdateFlags().sendHighGraphic(projectileData[1], 0);
-			hit = new HitDelay(player, attacker, victim, 1, ((((calculateProjectileSpeed(attacker, victim) + 3) / 9) / 3)), 
+			hit = new HitDelay(player, attacker, victim, ((((calculateProjectileSpeed(attacker, victim) + 3) / 9) / 3)), 
 					0);
 		}
 		if (projectileId != 0) {

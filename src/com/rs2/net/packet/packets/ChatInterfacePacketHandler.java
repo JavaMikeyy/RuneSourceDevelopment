@@ -31,7 +31,7 @@ public class ChatInterfacePacketHandler implements PacketHandler {
 	private void handleDialogue(Player player, Packet packet) {
 		int nextDialogue = player.getDialogue().getNextDialogue();
 		if(nextDialogue > 0) {
-			player.getDialogue().sendDialogue(nextDialogue);
+			player.getDialogue().sendDialogue(player.getClickId(), nextDialogue);
 		} else {
 			player.getActionSender().removeInterfaces();
 		}

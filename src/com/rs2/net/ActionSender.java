@@ -8,6 +8,7 @@ import com.rs2.model.players.Item;
 import com.rs2.model.players.Player;
 import com.rs2.model.players.GlobalObject;
 import com.rs2.model.players.Player.BankOptions;
+import com.rs2.model.content.combat.util.SpecialAttack;
 
 public class ActionSender {
 
@@ -34,7 +35,12 @@ public class ActionSender {
 		}
 		sendEnergy();
 		sendWeight();
+		if (player.getEquipment().getItemContainer().get(3) != null)
+			SpecialAttack.addSpecialBar(player, player.getEquipment().getItemContainer().get(3).getId());
 		sendMessage("Welcome to " + Constants.SERVER_NAME + ".");
+		for(int i = 0; i < Constants.MESSAGES_ON_LOGIN.length; i++) {
+			player.getActionSender().sendMessage(Constants.MESSAGES_ON_LOGIN[i]);
+		}
 		player.getPrivateMessaging().sendPMOnLogin();
 		return this;
 	}
@@ -202,7 +208,15 @@ public class ActionSender {
 	public ActionSender sendWalkableInterface(int id) {
 		StreamBuffer.OutBuffer out = StreamBuffer.newOutBuffer(3);
 		out.writeHeader(player.getEncryptor(), 208);
-		out.writeShort(id, StreamBuffer.ByteOrder.BIG);
+		out.writeShort(id, StreamBuffer.ByteOrder.LITTLE);
+		player.send(out.getBuffer());
+		return this;
+	}
+	
+	public ActionSender sendMultiInterface(boolean inMulti) {
+		StreamBuffer.OutBuffer out = StreamBuffer.newOutBuffer(3);
+		out.writeHeader(player.getEncryptor(), 61);
+		out.writeByte(inMulti ? 1 : 0);
 		player.send(out.getBuffer());
 		return this;
 	}
@@ -449,4 +463,63 @@ public class ActionSender {
 		sendConfig(108, 2);
 	}
 	
+	public ActionSender sendSpecialBar(int mainFrame, int subFrame) {
+		StreamBuffer.OutBuffer out = StreamBuffer.newOutBuffer(4);
+		out.writeHeader(player.getEncryptor(), 171);
+		out.writeByte(mainFrame);
+		out.writeShort(subFrame);
+		player.send(out.getBuffer());
+		return this;
+	}
+	
+	public ActionSender updateSpecialBar(int amount, int barId) {
+		StreamBuffer.OutBuffer out = StreamBuffer.newOutBuffer(7);
+		out.writeHeader(player.getEncryptor(), 70);
+		out.writeShort(amount);
+		out.writeShort(0, StreamBuffer.ByteOrder.LITTLE);
+		out.writeShort(barId, StreamBuffer.ByteOrder.LITTLE);
+		player.send(out.getBuffer());
+		return this;
+	}
+	
+	public void updateSpecialBarText(int specialBarId) {
+		if (player.isSpecialAttackActive()) {
+			int specAmount = (int) player.getSpecialAmount();
+			sendString((specAmount >= 2 ? "@yel@S P" : "@bla@S P") +
+					(specAmount >= 3 ? "@yel@ E" : "@bla@ E") +
+					(specAmount >= 4 ? "@yel@ C I" : "@bla@ C I") +
+					(specAmount >= 5 ? "@yel@ A L" : "@bla@ A L") +
+					(specAmount >= 6 ? "@yel@  A" : "@bla@  A") +
+					(specAmount >= 7 ? "@yel@ T T" : "@bla@ T T") +
+					(specAmount >= 8 ? "@yel@ A" : "@bla@ A") +
+					(specAmount >= 9 ? "@yel@ C" : "@bla@ C") +
+					(specAmount >= 10 ? "@yel@ K" : "@bla@ K"), specialBarId);
+		}
+		else {
+			sendString("@bla@S P E C I A L  A T T A C K", specialBarId);
+		}
+	}
+	
+	public void updateSpecialAmount(int barId) {
+		int specialCheck = 10;
+		for (int i = 0; i < 10; i++) {
+			updateSpecialBar((player.getSpecialAmount() >= specialCheck) ? 500 : 0, -- barId);
+			specialCheck --;
+		}
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

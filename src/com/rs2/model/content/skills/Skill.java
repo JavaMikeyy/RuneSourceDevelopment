@@ -3,6 +3,7 @@ package com.rs2.model.content.skills;
 import com.rs2.Constants;
 import com.rs2.model.World;
 import com.rs2.model.players.Player;
+import com.rs2.model.content.Prayer;
 
 public class Skill {
 	
@@ -14,6 +15,9 @@ public class Skill {
 	private int[] level = new int[SKILL_COUNT];
 	private double[] exp = new double[SKILL_COUNT];
 	
+	public int skillRenewalTimer = 100;
+	public int hitpointRenewalTimer = 100;
+	
 	public static final String[] SKILL_NAME = { "Attack", "Defence",
 		"Strength", "Hitpoints", "Ranged", "Prayer", "Magic", "Cooking",
 		"Woodcutting", "Fletching", "Fishing", "Firemaking", "Crafting",
@@ -21,7 +25,7 @@ public class Skill {
 		"Farming", "Runecrafting" };
 
 	public static final int ATTACK = 0, DEFENCE = 1, STRENGTH = 2,
-		HITPOINTS = 3, RANGE = 4, PRAYER = 5, MAGIC = 6, COOKING = 7,
+		HITPOINTS = 3, RANGED = 4, PRAYER = 5, MAGIC = 6, COOKING = 7,
 		WOODCUTTING = 8, FLETCHING = 9, FISHING = 10, FIREMAKING = 11,
 		CRAFTING = 12, SMITHING = 13, MINING = 14, HERBLORE = 15,
 		AGILITY = 16, THIEVING = 17, SLAYER = 18, FARMING = 19,
@@ -43,12 +47,58 @@ public class Skill {
 		}
 	}
 	
+	public void skillTick() {
+		if (skillRenewalTimer <= 0) {
+			for (int i = 0; i < SKILL_COUNT; i++) {
+				if (level[i] != getLevelForXP(getExp()[i])) {
+					if (level[i] > getLevelForXP(getExp()[i])) {
+						level[i] -= 1;
+					}	
+					else if (i != 5) {
+						level[i] += 1;
+					}
+					refresh(i);
+				}
+			}
+			skillRenewalTimer = 100;
+		}
+		else if (skillRenewalTimer == 50 && player.getIsUsingPrayer()[Prayer.RAPID_RESTORE]) {
+			for (int i = 0; i < SKILL_COUNT; i++) {
+				if (level[i] != getLevelForXP(getExp()[i])) {
+					if (level[i] > getLevelForXP(getExp()[i])) {
+						level[i] -= 1;
+					}	
+					else if (i != 5 && i != 3) {
+						level[i] += 1;
+					}
+					refresh(i);
+				}
+			}
+			skillRenewalTimer --;
+		}
+		else if (skillRenewalTimer == 50 && player.getIsUsingPrayer()[Prayer.RAPID_HEAL]) {
+			if (level[3] != getLevelForXP(getExp()[3])) {
+				if (level[3] > getLevelForXP(getExp()[3])) {
+					level[3] -= 1;
+				}	
+				else {
+					level[3] += 1;
+				}
+				refresh(3);
+			}
+			skillRenewalTimer --;
+		}
+		else {
+			skillRenewalTimer --;
+		}
+	}
+	
 	public int[][] CHAT_INTERFACES = {
 		{ATTACK, 6247, 0, 0},
 		{DEFENCE, 6253, 0, 0},
 		{STRENGTH, 6206, 0, 0},
 		{HITPOINTS, 6216, 0, 0},
-		{RANGE, 4443, 5453, 6114},
+		{RANGED, 4443, 5453, 6114},
 		{PRAYER, 6242, 0, 0},
 		{MAGIC, 6211, 0, 0},
 		{COOKING, 6226, 0, 0},
@@ -148,7 +198,7 @@ public class Skill {
 		for (int[] chatData : CHAT_INTERFACES) {
 			if (chatData[0] == skill) {
 				player.getActionSender().sendChatInterface(chatData[1]);
-				if (skill != RANGE && skill != MINING && skill != THIEVING && 
+				if (skill != RANGED && skill != MINING && skill != THIEVING && 
 						skill != FARMING) {
 					player.getActionSender().sendString(line1, chatData[1] + 1);
 					player.getActionSender().sendString(line2, chatData[1] + 2);
@@ -166,7 +216,7 @@ public class Skill {
 		final int strength = getLevelForXP(exp[STRENGTH]);
 		final int hp = getLevelForXP(exp[HITPOINTS]);
 		final int prayer = getLevelForXP(exp[PRAYER]);
-		final int ranged = getLevelForXP(exp[RANGE]);
+		final int ranged = getLevelForXP(exp[RANGED]);
 		final int magic = getLevelForXP(exp[MAGIC]);
 		int combatLevel = 3;
 		combatLevel = (int) ((defence + hp + Math.floor(prayer / 2)) * 0.2535) + 1;

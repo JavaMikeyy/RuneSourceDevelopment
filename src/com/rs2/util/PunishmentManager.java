@@ -13,6 +13,8 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
+import com.rs2.model.World;
+import com.rs2.model.players.Player;
 import com.rs2.util.Misc;
 
 
@@ -57,6 +59,10 @@ public class PunishmentManager {
 						if (ban.getChildText("banned").equalsIgnoreCase("true")) {
 							if (punishmentExpired(username, checkPunishmentStatus, ban.getChildText("daysBanApplied"), 
 							Integer.parseInt(ban.getChildText("dayOfBan")), Integer.parseInt(ban.getChildText("yearOfBan")))) {
+								if (punishmentExpired(username, checkPunishmentStatus, mute.getChildText("daysMuteApplied"), 
+										Integer.parseInt(mute.getChildText("dayOfMute")), Integer.parseInt(mute.getChildText("yearOfMute")))) {
+									removeFromPunishmentList(username);
+								}
 								return false;
 							}
 							return true;
@@ -67,6 +73,10 @@ public class PunishmentManager {
 						if (mute.getChildText("muted").equalsIgnoreCase("true")) {
 							if (punishmentExpired(username, checkPunishmentStatus, mute.getChildText("daysMuteApplied"), 
 							Integer.parseInt(mute.getChildText("dayOfMute")), Integer.parseInt(mute.getChildText("yearOfMute")))) {
+								if (punishmentExpired(username, checkPunishmentStatus, ban.getChildText("daysBanApplied"), 
+										Integer.parseInt(ban.getChildText("dayOfBan")), Integer.parseInt(ban.getChildText("yearOfBan")))) {
+									removeFromPunishmentList(username);
+								}
 								return false;
 							}
 							return true;
@@ -75,8 +85,7 @@ public class PunishmentManager {
 					}
 				}
 			}
-			addToPunishmentList(username, macAddress, ipAddress);
-		} 
+		}
 		catch (IOException io) {
 			System.out.println(io.getMessage());
 		} 
@@ -96,9 +105,11 @@ public class PunishmentManager {
 			Document doc = (Document) builder.build(xmlFile);
 			Element rootNode = doc.getRootElement();
 			List list = rootNode.getChildren("player");
+			boolean userFound = false;
 			for (int i = 0; i < list.size(); i++) {
 				Element node = (Element) list.get(i);
 				if (node.getChildText("username").equalsIgnoreCase(username)) {
+					userFound = true;
 					if (checkPunishmentStatus == Punishments.BAN) {
 						Element ban = node.getChild("ban");
 						ban.getChild("banned").setText("" + statusUpdate);
@@ -160,6 +171,15 @@ public class PunishmentManager {
 			XMLOutputter xmlOutput = new XMLOutputter();
 			xmlOutput.setFormat(Format.getPrettyFormat());
 			xmlOutput.output(doc, new FileWriter(xmlFile));
+			if (!userFound) {
+				Player playerToAdd = World.getPlayerByName(username);
+				if (playerToAdd == null) {
+					World.messageToStaff("The player " + username + " could not be successfully banned.");
+					return;
+				}
+				addToPunishmentList(playerToAdd);
+				appendPunishment(username, checkPunishmentStatus, statusUpdate, daysApplied);
+			}
 		} 
 		catch (IOException io) {
 			io.printStackTrace();
@@ -201,7 +221,7 @@ public class PunishmentManager {
 	/** 
 	  * Adding players to the punishment list (happens on first login)
 	  */
-	public static void addToPunishmentList(String username, int macAddress, String ipAddress) {
+	public static void addToPunishmentList(Player player) {
 		try {
 			SAXBuilder builder = new SAXBuilder();
 			File file = new File(PUNISHMENT_FILE);
@@ -213,7 +233,7 @@ public class PunishmentManager {
 			root.addContent(index);
 			/** Adding a new child to the index element */
 			Element name = new Element("username");
-			name.addContent("" + username);
+			name.addContent("" + player.getUsername());
 			index.addContent(name);
 			
 			/** Adding a new child to the index element */
@@ -269,11 +289,11 @@ public class PunishmentManager {
 			index.addContent(address);
 			/** Adding a new child to the addressBan element */
 			Element clientAddress = new Element("macAddress");
-			clientAddress.addContent("" + macAddress);
+			clientAddress.addContent("" + player.getMacAddress());
 			address.addContent(clientAddress);
 			/** Adding a new child to the addressBan element */
 			Element userAddress = new Element("ipAddress");
-			userAddress.addContent("" + ipAddress);
+			userAddress.addContent("" + player.getHost());
 			address.addContent(userAddress);
 			
 			XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
@@ -287,6 +307,32 @@ public class PunishmentManager {
 		}
 	}
 
+	public static void removeFromPunishmentList(String username) {
+		try {
+			SAXBuilder builder = new SAXBuilder();
+			File xmlFile = new File(PUNISHMENT_FILE);
+			Document doc = (Document) builder.build(xmlFile);
+			Element rootNode = doc.getRootElement();
+			List list = rootNode.getChildren("player");
+			for (int i = 0; i < list.size(); i++) {
+				Element node = (Element) list.get(i);
+				if (node.getChildText("username").equalsIgnoreCase(username)) {
+					list.remove(i);
+				}
+			}
+			rootNode.removeChild(username);
+			XMLOutputter xmlOutput = new XMLOutputter();
+			xmlOutput.setFormat(Format.getPrettyFormat());
+			xmlOutput.output(doc, new FileWriter(xmlFile));
+		} 
+		catch (IOException io) {
+			io.printStackTrace();
+		} 
+		catch (JDOMException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static enum Punishments {
 		BAN, MUTE, ADDRESS_BAN, ADDRESS_MUTE
 	}

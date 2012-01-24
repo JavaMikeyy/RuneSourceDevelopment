@@ -2,12 +2,22 @@ package com.rs2.model.players;
 
 import com.rs2.Constants;
 import com.rs2.model.players.Player.BankOptions;
+import com.rs2.model.content.BankPin;
 
 public class BankManager {
 	
 	public static final int SIZE = 250;
 	
 	public static void openBank(Player player) {
+		if (player.getBankPin().hasBankPin()) {
+			if (!player.getBankPin().isBankPinVerified()) {
+				player.getBankPin().startPinInterface(BankPin.PinInterfaceStatus.VERIFYING);
+				return;
+			}
+		}
+		else {
+			player.getActionSender().sendMessage("You do not have a bank pin, it is highly recommended you get one.");
+		}
 		Item[] inventory = player.getInventory().getItemContainer().toArray();
 		Item[] bank = player.getBank().toArray();
 		player.getActionSender().sendUpdateItems(5064, inventory);
@@ -59,8 +69,11 @@ public class BankManager {
 		boolean noted = item.getDefinition().isNote();
 		int freeInventorySlot = player.getInventory().getItemContainer().freeSlot();
 		if (!player.getInventory().getItemContainer().hasRoomFor(new Item(bankItem, bankAmount))) {
-			player.getActionSender().sendMessage("Not enough space in your inventory");
-			return;
+			player.getActionSender().sendMessage("Not enough space in your inventory.");
+			bankAmount = player.getInventory().getItemContainer().freeSlots();
+			if (!player.getInventory().getItemContainer().hasRoomFor(new Item(bankItem, bankAmount))) {
+				return;
+			}
 		}
 		int inBankAmount = player.getBank().getCount(bankItem);
 		if (bankAmount < 1 || bankItem < 0) {

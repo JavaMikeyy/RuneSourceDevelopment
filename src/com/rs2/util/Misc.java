@@ -210,6 +210,10 @@ public class Misc {
 			super(out);
 			writer = new BufferedWriter(new FileWriter(file, true));
 		}
+		
+		public TimestampLogger(OutputStream out) {
+			super(out);
+		}
 
 		@Override
 		public void println(String msg) {
@@ -226,6 +230,8 @@ public class Misc {
 		 */
 		private void log(String msg) {
 			try {
+				if (writer == null)
+					return;
 				writer.write(msg);
 				writer.newLine();
 				writer.flush();
@@ -265,6 +271,18 @@ public class Misc {
 		}
 	}
 	
+	public static String intToString(int intToChange) {
+		if (intToChange == 1)
+			return "first";
+		else if (intToChange == 2)
+			return "second";
+		else if (intToChange == 3)
+			return "third";
+		else if (intToChange == 4)
+			return "fourth";
+		return "first";
+	}
+	
 	/**
 	  *Generates a random number between 0 and the range
 	  */
@@ -273,16 +291,17 @@ public class Misc {
 	}
 	
 	public static int getDayOfYear() {
-		Date date = new Date();
-		Calendar cal = Calendar.getInstance();
+		Calendar c = Calendar.getInstance();
+		int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
 		int days = 0;
-		int year = 1900 + date.getYear();
-		int month = date.getMonth();
-		int[] daysOfTheMonth =
-		{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-		if ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0))
+		int[] daysOfTheMonth = {
+				31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+		};
+		if ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0)) {
 			daysOfTheMonth[1] = 29;
-		days += (date.getDay() + 18);
+		}
+		days += c.get(Calendar.DAY_OF_MONTH);
 		for (int i = 0; i < daysOfTheMonth.length; i++) {
 			if (i < month)
 				days += daysOfTheMonth[i];
@@ -291,8 +310,8 @@ public class Misc {
 	}
 	
 	public static int getYear() {
-		Date date = new Date();
-		return 1900 + date.getYear();
+		Calendar c = Calendar.getInstance();
+		return c.get(Calendar.YEAR);
 	}
 
 }

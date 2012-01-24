@@ -1,6 +1,51 @@
 <list>
 	<!-- Catherby -->
 	<npc>
+		<npcId>2258</npcId>
+		<position>
+			<x>2814</x>
+			<y>3447</y>
+			<z>0</z>
+		</position>
+		<walkType>WALK</walkType>
+	</npc>
+	<npc>
+		<npcId>804</npcId>
+		<position>
+			<x>2798</x>
+			<y>3440</y>
+			<z>0</z>
+		</position>
+		<walkType>WALK</walkType>
+	</npc>
+	<npc>
+		<npcId>576</npcId>
+		<position>
+			<x>2807</x>
+			<y>3436</y>
+			<z>0</z>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>587</npcId>
+		<position>
+			<x>2806</x>
+			<y>3436</y>
+			<z>0</z>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
+		<npcId>585</npcId>
+		<position>
+			<x>2805</x>
+			<y>3436</y>
+			<z>0</z>
+		</position>
+		<walkType>STAND</walkType>
+	</npc>
+	<npc>
 		<npcId>494</npcId>
 		<position>
 			<x>2810</x>

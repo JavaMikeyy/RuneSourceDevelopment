@@ -6,6 +6,8 @@ import com.rs2.Constants;
 import com.rs2.model.players.container.Container;
 import com.rs2.model.players.container.Container.Type;
 import com.rs2.model.content.combat.util.Bonuses;
+import com.rs2.model.content.combat.util.SpecialAttack;
+import com.rs2.model.content.combat.util.WeaponData;
 
 public class Equipment {
 	
@@ -120,10 +122,15 @@ public class Equipment {
 	
 	public void equip(int slot) {
 		Item item = player.getInventory().getItemContainer().get(slot);
-		if (!(Boolean) player.getAttributes().get("canTeleport")) {
+		if (item == null) {
 			return;
 		}
-		if (item == null) {
+		if (Bonuses.getBonusDefinitions()[item.getId()] == null) {
+			player.getActionSender().sendMessage("There's no bonus for the "
+			+ ItemManager.getItemDefinitions()[item.getId()].getName() + " you just equipped.");
+			player.getActionSender().sendMessage("If this item requires a bonus, please report this error.");
+		}
+		if (!(Boolean) player.getAttributes().get("canTeleport")) {
 			return;
 		}
 		if (item.getDefinition().isStackable()) {
@@ -143,6 +150,22 @@ public class Equipment {
 			player.getInventory().removeItemSlot(item, slot);
 		} else {
 			int slotType = getEquipmentSlot(item.getId());
+			if (slotType == 3) {
+				if (WeaponData.isTwoHanded(item.getId())) {
+					unequip(5);
+					if (itemContainer.get(5) != null) {
+						return;
+					}
+				}
+			}
+			if (slotType == 5 && itemContainer.get(3) != null) {
+				if (WeaponData.isTwoHanded(itemContainer.get(3).getId())) {
+					unequip(3);
+					if (itemContainer.get(3) != null) {
+						return;
+					}
+				}
+			}
 			if (itemContainer.get(slotType) != null) {
 				Item equipItem = itemContainer.get(slotType);
 				player.getInventory().addItemToSlot(equipItem, slot);
@@ -152,6 +175,8 @@ public class Equipment {
 			itemContainer.set(slotType, new Item(item.getId(), item.getCount()));
 		}
 		refresh();
+		player.setSpecialAttackActive(false);
+		SpecialAttack.addSpecialBar(player, item.getId());
 		player.getMagic().setAutoCasting(false, 0);
 		player.setInstigatingAttack(false);
 		player.setFollowingEntity(null);
@@ -184,13 +209,8 @@ public class Equipment {
 			}
 			Item item = player.getEquipment().getItemContainer().get(i);
 			for (int bonus = 0; bonus < 12; bonus ++) {
-				if (Bonuses.getBonusDefinitions()[item.getId()] == null) {
-					player.getActionSender().sendMessage("There's no bonus for the "
-					+ ItemManager.getItemDefinitions()[item.getId()].getName() + " you just equipped, " +
-					" please report this error.");
-					continue;
-				}
-				player.setBonuses(bonus, Bonuses.getBonusDefinitions()[item.getId()].getBonus(bonus) + player.getBonuses().get(bonus));
+				if (Bonuses.getBonusDefinitions()[item.getId()] != null)
+					player.setBonuses(bonus, Bonuses.getBonusDefinitions()[item.getId()].getBonus(bonus) + player.getBonuses().get(bonus));
 			}
 		}
 	}
@@ -222,7 +242,7 @@ public class Equipment {
 			player.getActionSender().sendString("Unarmed", 5857);
 			return;
 		}
-		int interfaceId = weapon.getEquipmentDefintion().getInterfaceId();
+		int interfaceId = WeaponData.getWeaponInterface(player);
 		player.getActionSender().sendSidebarInterface(0, interfaceId);
 		player.getActionSender().sendString(weapon.getDefinition().getName(), 
 				interfaceId + 3);
@@ -299,24 +319,21 @@ public class Equipment {
 		if (item == null) {
 			return 0x328;
 		}
-		return ItemManager.getInstance().getEquipmentDefinitions()[item.getId()].
-			getStandAnim();
+		return WeaponData.getStandAnimation(player);
 	}
 	
 	public int getWalkAnim(Item item) {
 		if (item == null) {
 			return 0x333;
 		}
-		return ItemManager.getInstance().getEquipmentDefinitions()[item.getId()].
-			getWalkAnim();
+		return WeaponData.getWalkOrRunAnimation(player, false);
 	}
 	
 	public int getRunAnim(Item item) {
 		if (item == null) {
 			return 0x338;
 		}
-		return ItemManager.getInstance().getEquipmentDefinitions()[item.getId()].
-			getRunAnim();
+		return WeaponData.getWalkOrRunAnimation(player, true);
 	}
 
 	public static void sortEquipmentSlotDefinitions() {

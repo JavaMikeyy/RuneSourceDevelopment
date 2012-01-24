@@ -130,8 +130,8 @@ public final class PlayerUpdating {
 		StreamBuffer.OutBuffer block = StreamBuffer.newOutBuffer(128);
 
 		block.writeByte(player.getGender()); // Gender
-		block.writeByte(player.isSkulled() ? 0 : -1);
 		block.writeByte(player.getPrayerIcon());
+		block.writeByte(player.isSkulled() ? 0 : -1);
 		
 		// Hat.
 		if (player.getEquipment().getItemContainer().isSlotUsed(Constants.EQUIPMENT_SLOT_HEAD)) {

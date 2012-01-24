@@ -40,9 +40,14 @@ import com.rs2.model.content.randomevents.*;
 import com.rs2.model.content.combat.*;
 import com.rs2.model.content.combat.util.Skulling;
 import com.rs2.model.content.combat.util.DetermineHit;
+import com.rs2.model.content.combat.util.SpecialAttack;
+import com.rs2.model.content.combat.util.CombatItems;
+import com.rs2.model.content.combat.util.Poison;
+import com.rs2.model.content.combat.util.FreezeEntity;
 import com.rs2.model.content.combat.magic.Magic;
 import com.rs2.model.content.combat.ranged.Ranged;
-import com.rs2.model.content.food.Food;
+import com.rs2.model.content.consumables.Food;
+import com.rs2.model.content.consumables.Potion;
 import com.rs2.model.content.skills.*;
 import com.rs2.model.npcs.Npc;
 import com.rs2.model.players.container.Container;
@@ -97,6 +102,7 @@ public class Player extends Entity {
 	private Magic magic = new Magic(this);
 	private Ranged ranged = new Ranged(this);
 	private Food food = new Food(this);
+	private Potion potion = new Potion(this);
 	private Runecrafting runecrafting = new Runecrafting(this);
 	private BoneBurying boneBurying = new BoneBurying(this);
 	private Herblore herblore = new Herblore(this);
@@ -111,6 +117,7 @@ public class Player extends Entity {
 	private Dialogue dialogue = new Dialogue(this);
 	private Questing questing = new Questing(this);
 	private Following following = new Following(this);
+	private BankPin bankPin = new BankPin(this);
 	private Login login = new Login();
 	private Position currentRegion = new Position(0, 0, 0);
 	private int primaryDirection = -1;
@@ -173,11 +180,16 @@ public class Player extends Entity {
 	private int musicVolume = 0;
 	private int effectVolume = 0;
 	private int questPoints = 0;
-	private Object[] slayerTask = {"", -1};
+	private boolean specialAttackActive = false;
+	private double specialAmount = 10.0;
+	private int specialRechargeTimer = 100;
+	private int ringOfRecoilLife = 20;
+	
 	private List<LocalPlugin> plugins = new ArrayList<LocalPlugin>();
 	
+	private Object[] slayerTask = {"", -1};
 	private static Object[][] staff = {
-		{"Mopar", 2}
+		{"Mopar", 2}, {"Mikey", 2}
 	};
 	
 	@Override
@@ -195,17 +207,18 @@ public class Player extends Entity {
 	public void initAttributes() {
 		getAttributes().put("isBanking", Boolean.FALSE);
 		getAttributes().put("isShopping", Boolean.FALSE);
-		getAttributes().put("usedGlory", Boolean.FALSE);
-		getAttributes().put("operate", Boolean.FALSE);
 		getAttributes().put("canTeleport", Boolean.TRUE);
 		getAttributes().put("canPickup", Boolean.FALSE);
-		getAttributes().put("doDamage", Boolean.FALSE);
+		getAttributes().put("canTakeDamage", Boolean.TRUE);
 		getAttributes().put("canRestoreEnergy", Boolean.FALSE);
 	}
 
 	public void applyDeath() {
 		if (applyDeathTimer == 3) {
 			getUpdateFlags().sendAnimation(2304, 0);
+		}
+		else if (applyDeathTimer == 1) {
+			prayer.applyRetributionPrayer(this);
 		}
 		else if (applyDeathTimer == 0) {
 			applyLife();
@@ -217,13 +230,21 @@ public class Player extends Entity {
 		//dropitems
 		if (getCombatingEntity() instanceof Player) {
 			Player otherPlayer = World.getPlayers()[getCombatingEntity().getIndex()];
-			otherPlayer.getActionSender().sendMessage("You have defeated " + getUsername() + "!");
+			String[] randomKillMessages = {
+				"You have defeated " + getUsername() + "!", getUsername() + " won't cross your path again!",
+				"Good fight, " + getUsername() + ".", getUsername() + " will feel that in Lumbridge.",
+				"C'est la vie, " + getUsername() + "."
+			};
+			otherPlayer.getActionSender().sendMessage(
+					randomKillMessages[Misc.randomNumber(randomKillMessages.length)]);
 			otherPlayer.getUpdateFlags().faceEntity(65535);
 		}
 		getActionSender().sendMessage("Oh dear, you have died!");
 		getCombat().resetCombat(this);
 		setCombatTimer(0);
 		setFrozen(false);
+		Poison.appendPoison(this, false, 0);
+		prayer.resetAll();
 		sendTeleport(Constants.START_X, Constants.START_Y, Constants.START_Z);
 		getUpdateFlags().sendAnimation(65535, 0);
 		for (int i = 0; i < getSkill().SKILL_COUNT; i++) {
@@ -245,6 +266,13 @@ public class Player extends Entity {
 			applyDeathTimer --;
 			applyDeath();
 		}
+		WalkInterfaces.addWalkableInterfaces(this);
+		teleportation.teleportTick();
+		prayer.prayerTick();
+		skill.skillTick();
+		SpecialAttack.specialAttackTick(this);
+		Poison.poisonTick(this);
+		FreezeEntity.freezeTick(this);
 		movementHandler.process();
 		getFollowing().followTick(this);
 		getCombat().combatTick(this);
@@ -256,25 +284,32 @@ public class Player extends Entity {
 	
 	@Override
 	public void hit(int damage, int hitType) {
-		if (damage > skill.getLevel()[Skill.HITPOINTS]) {
-			damage = skill.getLevel()[Skill.HITPOINTS];
-		}
-		skill.getLevel()[Skill.HITPOINTS] -= damage;
-		if (!getUpdateFlags().isHitUpdate()) {
-			getUpdateFlags().setDamage(damage);
-			getUpdateFlags().setHitType(hitType);
-			getUpdateFlags().setHitUpdate(true);
-		} else {
-			getUpdateFlags().setDamage2(damage);
-			getUpdateFlags().setHitType2(hitType);
-			getUpdateFlags().setHitUpdate2(true);
-		}
-		setDamage(damage);
-		setHitType(hitType);
-		skill.refresh(Skill.HITPOINTS);
-		if (skill.getLevel()[Skill.HITPOINTS] <= 0) {
-			setDead(true);
-			applyDeathTimer = 6;
+		if (isDead())
+			return;
+		if ((Boolean) getAttributes().get("canTakeDamage")) {
+			if (damage > skill.getLevel()[Skill.HITPOINTS]) {
+				damage = skill.getLevel()[Skill.HITPOINTS];
+			}
+			skill.getLevel()[Skill.HITPOINTS] -= damage;
+			if (!getUpdateFlags().isHitUpdate()) {
+				getUpdateFlags().setDamage(damage);
+				getUpdateFlags().setHitType(hitType);
+				getUpdateFlags().setHitUpdate(true);
+			} else {
+				getUpdateFlags().setDamage2(damage);
+				getUpdateFlags().setHitType2(hitType);
+				getUpdateFlags().setHitUpdate2(true);
+			}
+			setHitType(hitType);
+			skill.refresh(Skill.HITPOINTS);
+			if (skill.getLevel()[Skill.HITPOINTS] <= 0) {
+				setDead(true);
+				applyDeathTimer = 6;
+			}
+			if (getCombatingEntity() != null)
+				CombatItems.appendRingOfRecoil(this, damage);
+			CombatItems.appendRingOfLife(this);
+			prayer.applyRedemptionPrayer(this);
 		}
 	}
 
@@ -476,6 +511,16 @@ public class Player extends Entity {
 			setDead(true);
 			applyDeath();
 		}
+		if (keyword.equals("setlevel")) {
+			skill.getLevel()[Integer.parseInt(args[0])] = Integer.parseInt(args[1]);
+			skill.refresh(Integer.parseInt(args[0]));
+		}
+		if (keyword.equals("refreshlevel")) {
+			for (int i = 0; i < 22; i++) {
+				skill.getLevel()[i] = 99;
+				skill.refresh(i);
+			}
+		}
 		if (keyword.equals("points")) {
 			serverPoints = 1000;
 		}
@@ -488,6 +533,10 @@ public class Player extends Entity {
 				inventory.addItem(new Item(554 + i, 1000));
 				inventory.addItem(new Item(1381, 1));
 				inventory.addItem(new Item(4675, 1));
+		}
+		if (keyword.equals("maxh2")) {
+			actionSender.sendMessage("Max hit: " + DetermineHit.getRangedMaxHit(this));
+			actionSender.sendMessage("accuracy: " + DetermineHit.getRangedAccuracy(this, this));
 		}
 		if (keyword.equals("maxh")) {
 			actionSender.sendMessage("Max hit: " + DetermineHit.getMeleeMaxHit(this));
@@ -515,29 +564,51 @@ public class Player extends Entity {
 		if (keyword.equals("players")) {
 			actionSender.sendMessage("There are " + World.playerAmount() + " players online.");
 		}
+		if (keyword.equals("poison")) {
+			Poison.appendPoison(this, true, 6);
+		}
 		if (keyword.equals("banuser") && getStaffRights() >= 2) {
-			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.BAN, true, args[1].toLowerCase());
+			String punishedPlayer = args[0].toLowerCase().replaceAll("_", " ");
+			PunishmentManager.appendPunishment(punishedPlayer, 
+					PunishmentManager.Punishments.BAN, true, args[1].toLowerCase());
 		}
 		if (keyword.equals("unbanuser") && getStaffRights() >= 2) {
-			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.BAN, false, 0);
+			String punishedPlayer = args[0].toLowerCase().replaceAll("_", " ");
+			PunishmentManager.appendPunishment(punishedPlayer, 
+					PunishmentManager.Punishments.BAN, false, 0);
 		}
 		if (keyword.equals("muteuser") && getStaffRights() >= 1) {
-			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.MUTE, true, args[1].toLowerCase());
+			String punishedPlayer = args[0].toLowerCase().replaceAll("_", " ");
+			PunishmentManager.appendPunishment(punishedPlayer, 
+					PunishmentManager.Punishments.MUTE, true, args[1].toLowerCase());
 		}
 		if (keyword.equals("unmuteuser") && getStaffRights() >= 1) {
-			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.MUTE, false, 0);
+			String punishedPlayer = args[0].toLowerCase().replaceAll("_", " ");
+			PunishmentManager.appendPunishment(punishedPlayer, 
+					PunishmentManager.Punishments.MUTE, false, 0);
 		}
 		if (keyword.equals("addressbanuser") && getStaffRights() >= 2) {
-			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.ADDRESS_BAN, true, args[1].toLowerCase());
+			String punishedPlayer = args[0].toLowerCase().replaceAll("_", " ");
+			PunishmentManager.appendPunishment(punishedPlayer, 
+					PunishmentManager.Punishments.ADDRESS_BAN, true, args[1].toLowerCase());
 		}
 		if (keyword.equals("unaddressbanuser") && getStaffRights() >= 2) {
-			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.ADDRESS_BAN, false, 0);
+			String punishedPlayer = args[0].toLowerCase().replaceAll("_", " ");
+			PunishmentManager.appendPunishment(punishedPlayer, 
+					PunishmentManager.Punishments.ADDRESS_BAN, false, 0);
 		}
 		if (keyword.equals("addressmuteuser") && getStaffRights() >= 1) {
-			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.ADDRESS_MUTE, true, args[1].toLowerCase());
+			String punishedPlayer = args[0].toLowerCase().replaceAll("_", " ");
+			PunishmentManager.appendPunishment(punishedPlayer, 
+					PunishmentManager.Punishments.ADDRESS_MUTE, true, args[1].toLowerCase());
 		}
 		if (keyword.equals("unaddressmuteuser") && getStaffRights() >= 1) {
-			PunishmentManager.appendPunishment(args[0].toLowerCase(), PunishmentManager.Punishments.ADDRESS_MUTE, false, 0);
+			String punishedPlayer = args[0].toLowerCase().replaceAll("_", " ");
+			PunishmentManager.appendPunishment(punishedPlayer, 
+					PunishmentManager.Punishments.ADDRESS_MUTE, false, 0);
+		}
+		if (keyword.equals("remove") && getStaffRights() >= 1) {
+			PunishmentManager.removeFromPunishmentList(args[0]);
 		}
 		if (keyword.equals("genie")) {
 			genie.sendRandom();
@@ -552,6 +623,10 @@ public class Player extends Entity {
 		}
 		if (keyword.equals("sound")) {
 			actionSender.sendSound(Integer.parseInt(args[0]), 1, 0);
+		}
+		if (keyword.equals("slot")) {
+			Item item = getEquipment().getItemContainer().get(Integer.parseInt(args[0]));
+			actionSender.sendMessage("" + ItemManager.getInstance().getItemName(item.getId()));
 		}
 		if (keyword.equals("emptyinv")) {
 			int id = Integer.parseInt(args[0]);
@@ -633,6 +708,7 @@ public class Player extends Entity {
 		inventory.sendInventoryOnLogin();
 		skill.sendSkillsOnLogin();
 		equipment.sendEquipmentOnLogin();
+		bankPin.checkBankPinChangeStatus();
 		sendPendingItems();
 		sendTickUpdatesOnLogin();
 		prayer.resetAll();
@@ -1064,8 +1140,16 @@ public class Player extends Entity {
 		return food;
 	}
 	
+	public Potion getPotion() {
+		return potion;
+	}
+	
 	public Following getFollowing() {
 		return following;
+	}
+	
+	public BankPin getBankPin() {
+		return bankPin;
 	}
 	
 	public Dialogue getDialogue() {
@@ -1479,8 +1563,41 @@ public class Player extends Entity {
 		if ((Integer) slayerTask[1] <= 0) {
 			Object[] blankTask = {"", -1};
 			setSlayerTask(blankTask);
-			actionSender.sendMessage("You've completed your slayer task. Return to Vanakka for another.");
+			actionSender.sendMessage("You've completed your slayer task;" +
+					"Return to Vanakka for another slayer task.");
 		}
+	}
+	
+	public void setSpecialAmount(double specialAmount) {
+		this.specialAmount = specialAmount;
+	}
+	
+	public double getSpecialAmount() {
+		return specialAmount;
+	}
+	
+	public boolean isSpecialAttackActive() {
+		return specialAttackActive;
+	}
+	
+	public void setSpecialAttackActive(boolean specialAttackActive) {
+		this.specialAttackActive = specialAttackActive;
+	}
+	
+	public void setSpecialRechargeTimer(int specialRechargeTimer) {
+		this.specialRechargeTimer = specialRechargeTimer;
+	}
+	
+	public int getSpecialRechargeTimer() {
+		return specialRechargeTimer;
+	}
+	
+	public void setRingOfRecoilLife(int ringOfRecoilLife) {
+		this.ringOfRecoilLife = ringOfRecoilLife;
+	}
+	
+	public int getRingOfRecoilLife() {
+		return ringOfRecoilLife;
 	}
 	
 	public Object[] getSlayerTask() {

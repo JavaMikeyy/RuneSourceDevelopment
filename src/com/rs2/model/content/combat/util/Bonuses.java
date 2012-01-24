@@ -13,7 +13,7 @@ public class Bonuses {
 	@SuppressWarnings("unchecked")
 	public static void loadBonusDefinitions() throws FileNotFoundException, IOException {
 		System.out.println("Loading item bonuses...");
-		List<Bonuses.BonusDefinition> list = (List<Bonuses.BonusDefinition>) XStreamUtil.getxStream().fromXML(new FileInputStream("./data/bonuses.xml"));
+		List<Bonuses.BonusDefinition> list = (List<Bonuses.BonusDefinition>) XStreamUtil.getxStream().fromXML(new FileInputStream("./data/content/combat/bonuses.xml"));
 		for (Bonuses.BonusDefinition def : list) {
 			bonusDefinitions[def.getItemId()] = def;
 		}

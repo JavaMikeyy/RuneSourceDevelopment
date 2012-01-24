@@ -4,7 +4,9 @@ import com.rs2.util.Misc;
 import com.rs2.model.World;
 import com.rs2.model.npcs.NpcDefinition;
 import com.rs2.model.players.Player;
+import com.rs2.model.npcs.Npc;
 import com.rs2.model.content.dialogue.impl.*;
+import com.rs2.model.content.questing.*;
 
 /**
   * By Mikey` of Rune-Server
@@ -28,28 +30,45 @@ public class Dialogue {
 	
 	private static final String[][] RANDOM_NPC_CHAT =
 	{
-		{"The Zamorak wizard in Catherby can", "teleport you to the abyss."}, {"Nice to meet you."}, 
+		{"The Mage of Zamorak in Catherby", "can teleport you to the abyss."}, {"Nice to meet you."}, 
 		{"I sure hope it doesn't rain.. if that's possible."}, {"Vannaka can assign you a slayer task if you ask him."},
 		{"Please remember to report bugs."}
 	};
 	
-	public void sendDialogue(int dialogueId) {
-		player.getQuesting().sendQuestDialogue(dialogueId);
-		MiscDialogue.sendDialogue(player, dialogueId);
-		Banker.sendDialogue(player, dialogueId);
-		SlayerMaster.sendDialogue(player, dialogueId);
-		MakeOverMage.sendDialogue(player, dialogueId);
-		if (dialogueId == 1) {
-			int chatIndex = Misc.randomNumber(RANDOM_NPC_CHAT.length);
-			String[] chatLine = RANDOM_NPC_CHAT[chatIndex];
-			if (RANDOM_NPC_CHAT[chatIndex].length == 2) {
-				sendNpcChat2(chatLine[0], chatLine[1], CONTENT);
-			}
-			else {
-				sendNpcChat1(chatLine[0], CONTENT);
-			}
-			nextDialogue = 0;
+	public void sendDialogue(int npcId, int startingDialogue) {
+		switch (npcId) {
+			case 494:
+				Banker.sendDialogue(player, startingDialogue);
+				break;
+			case 2258:
+				MageOfZamorak.sendDialogue(player, startingDialogue);
+				break;
+			case 599:
+				MakeOverMage.sendDialogue(player, startingDialogue);
+				break;
+			case 1597:
+				SlayerMaster.sendDialogue(player, startingDialogue);
+				break;
+			case 2244:
+				GettingStarted.sendDialogue(player, startingDialogue);
+				break;
+			case -1:
+				int chatIndex = Misc.randomNumber(RANDOM_NPC_CHAT.length);
+				String[] chatLine = RANDOM_NPC_CHAT[chatIndex];
+				if (RANDOM_NPC_CHAT[chatIndex].length == 2) {
+					sendNpcChat2(chatLine[0], chatLine[1], CONTENT);
+				}
+				else {
+					sendNpcChat1(chatLine[0], CONTENT);
+				}
+				nextDialogue = 0;
+				break;
 		}
+	}
+	
+	public void endDialogue() {
+		setNextDialogue(0);
+		setOptionId(0);
 	}
 	
 	/**
@@ -59,48 +78,99 @@ public class Dialogue {
 		switch (buttonId) {//optionInterface, optionId
 			case 9157://2options, option1
 				switch (optionId) {
-					case 1:
-						Banker.sendDialogue(player, 4);
-						break;
 					case 2:
-						sendDialogue(11);
+						GettingStarted.sendDialogue(player, 11);
 						break;
 					case 4:
-						MakeOverMage.sendDialogue(player, 34);
+						MakeOverMage.sendDialogue(player, 3);
+						break;
+					case 6:
+						Banker.sendDialogue(player, 10);
+						break;
+					case 7:
+						Banker.sendDialogue(player, 27);
+						break;
+					case 8:
+						Banker.sendDialogue(player, 33);
+						break;
+					case 10:
+						Banker.sendDialogue(player, 25);
+						break;
+					case 11:
+						Banker.sendDialogue(player, 30);
 						break;
 				}
 				break;
 			case 9158://2options, option2
 				switch (optionId) {
-					case 1:
-						Banker.sendDialogue(player, 6);
-						break;
 					case 2:
-						sendDialogue(12);
+						GettingStarted.sendDialogue(player, 12);
 						break;
 					case 4:
-						MakeOverMage.sendDialogue(player, 37);
+						MakeOverMage.sendDialogue(player, 6);
+						break;
+					case 6:
+						Banker.sendDialogue(player, 22);
+						break;
+					case 7:
+						Banker.sendDialogue(player, 26);
+						break;
+					case 8:
+						Banker.sendDialogue(player, 20);
+						break;
+					case 10:
+						Banker.sendDialogue(player, 26);
+						break;
+					case 11:
+						Banker.sendDialogue(player, 26);
 						break;
 				}
 				break;
 			case 9167://3options, option1
 				switch (optionId) {
+					case 1:
+						Banker.sendDialogue(player, 3);
+						break;
 					case 3:
-						SlayerMaster.sendDialogue(player, 24);
+						SlayerMaster.sendDialogue(player, 3);
+						break;
+					case 5:
+						MageOfZamorak.sendDialogue(player, 3);
+						break;
+					case 9:
+						Banker.sendDialogue(player, 15);
 						break;
 				}
 				break;
 			case 9168://3options, option2
 				switch (optionId) {
+					case 1:
+						Banker.sendDialogue(player, 7);
+						break;
 					case 3:
-						SlayerMaster.sendDialogue(player, 26);
+						SlayerMaster.sendDialogue(player, 5);
+						break;
+					case 5:
+						MageOfZamorak.sendDialogue(player, 5);
+						break;
+					case 9:
+						Banker.sendDialogue(player, 18);
 						break;
 				}
 				break;
 			case 9169://3options, option3
 				switch (optionId) {
+					case 1:
+						Banker.sendDialogue(player, 5);
+						break;
 					case 3:
-						SlayerMaster.sendDialogue(player, 30);
+						SlayerMaster.sendDialogue(player, 9);
+						break;
+					case 5:
+						MageOfZamorak.sendDialogue(player, 7);
+						break;
+					case 9:
+						Banker.sendDialogue(player, 20);
 						break;
 				}
 				break;

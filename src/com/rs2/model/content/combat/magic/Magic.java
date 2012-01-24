@@ -1,5 +1,7 @@
 package com.rs2.model.content.combat.magic;
 
+import com.rs2.model.content.combat.util.FreezeEntity;
+import com.rs2.model.content.combat.util.Poison;
 import com.rs2.model.players.Player;
 import com.rs2.model.players.Item;
 import com.rs2.model.players.ItemManager;
@@ -167,7 +169,6 @@ public class Magic {
 				attacker.setFollowingEntity(null);
 			}
 			this.attackInitialized = false;
-			player.getActionSender().sendMessage("Reset magic.");
 		}
 	}
 	
@@ -198,19 +199,6 @@ public class Magic {
 			if (runesToRemove[i] != 0)
 				player.getInventory().removeItem(new Item(runesToRemove[i], runesToRemove[i + 1]));
 		return true;
-	}
-	
-	/**
-	  * Applying any extra effects (poisoning, freezing, etc) after the attack.
-	  */
-	public void applyMagicEffects(Entity attacker, Entity victim) {
-		int magicIndex = getMagicIndex();
-		switch (magicIndex) {
-			case 12891:
-				victim.setFrozen(true);
-				victim.setFrozenTimer(15);
-				break;
-		}
 	}
 	
 	/**

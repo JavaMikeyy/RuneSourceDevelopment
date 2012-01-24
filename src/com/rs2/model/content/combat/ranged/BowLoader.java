@@ -11,7 +11,7 @@ public class BowLoader {
 	@SuppressWarnings("unchecked")
 	public static void loadBowDefinitions() throws FileNotFoundException, IOException {
 		System.out.println("Loading bow definitions...");
-		List<BowDefinition> list = (List<BowDefinition>) XStreamUtil.getxStream().fromXML(new FileInputStream("./data/content/bowdef.xml"));
+		List<BowDefinition> list = (List<BowDefinition>) XStreamUtil.getxStream().fromXML(new FileInputStream("./data/content/combat/bowdef.xml"));
 		int count = 0;
 		for (BowDefinition def : list) {
 			Ranged.getBowDefinitions()[count] = def;

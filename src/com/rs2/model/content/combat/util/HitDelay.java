@@ -9,17 +9,15 @@ import com.rs2.model.content.combat.magic.SpellDefinition;
 
 public class HitDelay {
 	
-	private int hit, delay, endGraphic;
+	private int delay, endGraphic;
 	
-	public HitDelay(Player player, Entity attacker, Entity victim, int hit, int delay, int endGraphic) {
-		this.hit = hit;
+	public HitDelay(Player player, Entity attacker, Entity victim, int delay, int endGraphic) {
 		this.delay = delay;
 		this.endGraphic = endGraphic;
 		tickHitDelay(player, attacker, victim);
 	}
 	
-	public HitDelay(Npc npc, Entity attacker, Entity victim, int hit, int delay, int endGraphic) {
-		this.hit = hit;
+	public HitDelay(Npc npc, Entity attacker, Entity victim, int delay, int endGraphic) {
 		this.delay = delay;
 		this.endGraphic = endGraphic;
 		tickHitDelay(npc, attacker, victim);
@@ -37,21 +35,28 @@ public class HitDelay {
 					return;
 				}
 				else {
+					hit = attacker.applyPrayerToHit(attacker, victim, hit);
 					victim.hit(hit, hit == 0 ? 0 : 1);
+					attacker.applyPrayerEffects(victim, hit);
+					Poison.applyPoisonFromWeapons(attacker, victim);
 				}
-				player.getCombat().completeDelayedHit(attacker, victim);
+				if (attacker.getAttackType() == Entity.AttackTypes.MAGIC) {
+					MagicSpellEffects.applyMagicEffects(attacker, attacker.getCombatingEntity(), hit);
+				}
 				if (endGraphic != 0) {
 					if (attacker.getAttackType() == Entity.AttackTypes.MAGIC) {
 						if (player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getMagicType() == 
 								SpellDefinition.MagicTypes.ANCIENT) {
 							attacker.getCombatingEntity().getUpdateFlags().sendGraphic(endGraphic, 0);
 						}
-						else {
+						else if (player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getMagicType() == 
+								SpellDefinition.MagicTypes.MODERN) {
 							attacker.getCombatingEntity().getUpdateFlags().sendHighGraphic(endGraphic, 0);
 						}
 					}
 				}
 				stop();
+				player.getCombat().completeDelayedHit(attacker, victim);
 			}
 		});
 	}
@@ -61,7 +66,9 @@ public class HitDelay {
 			@Override
 			public void execute() {
 				int hit = DetermineHit.determineHit(attacker, victim);
+				hit = attacker.applyPrayerToHit(attacker, victim, hit);
 				victim.hit(hit, hit == 0 ? 0 : 1);
+				Poison.applyPoisonFromWeapons(attacker, victim);
 				npc.getCombat().completeDelayedHit(attacker, victim);
 				if (endGraphic > 0)
 					attacker.getCombatingEntity().getUpdateFlags().sendGraphic(endGraphic, 0);

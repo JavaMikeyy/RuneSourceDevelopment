@@ -3,6 +3,8 @@ package com.rs2.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.rs2.model.content.combat.util.SpecialAttack;
+import com.rs2.model.content.combat.util.WeaponData;
 import com.rs2.model.npcs.Npc;
 import com.rs2.model.players.Item;
 import com.rs2.model.players.Player;
@@ -11,18 +13,26 @@ import com.rs2.net.StreamBuffer;
 public abstract class Entity {
 	
 	private int index;
+	
 	private Entity interactingEntity;
 	private Entity combatingEntity;
 	private Entity followingEntity;
 	private Entity[] engagedEntity = new Entity[30];
 	private Entity target;
+	
 	private boolean isDead;
 	private boolean instigatingAttack;
 	private boolean isFrozen;
+	private boolean isPoisoned;
+	
 	private int frozenTimer;
-	private int damage;
+	private int freezeImmunityTimer;
+	private int poisonDamage;
+	private int poisonedTimer;
+	private int poisonHitTimer;
+	private int poisonImmunityTimer;
+	private int fireImmunityTimer;
 	private int hitType;
-	private int hitDelayTimer = -1;
 	private int combatTimer;
 	private int attackTimer;
 	
@@ -46,16 +56,18 @@ public abstract class Entity {
 				return 5;
 			}
 			else if (player.getAttackType() == AttackTypes.RANGED) {
-				return player.getRanged().getBowDefinitions()[player.getRanged().getBowIndex()].getAttackSpeed();
+				return WeaponData.getWeaponSpeed(player);
+				//return player.getRanged().getBowDefinitions()[player.getRanged().getBowIndex()].getAttackSpeed();
 			}
 			else if (player.getAttackType() == AttackTypes.MELEE) {
-				return (weapon == null ? 5 : weapon.getEquipmentDefintion().getHitTimer());
+				return WeaponData.getWeaponSpeed(player);
+				//return (weapon == null ? 5 : weapon.getEquipmentDefintion().getHitTimer());
 			}
 		} else if (this instanceof Npc) {
 			Npc npc = (Npc) this;
 			return (npc.getDefinition().getHitTimer() > 0 ? npc.getDefinition().getHitTimer() : 5);
 		}
-		return 0;
+		return 5;
 	}
 	
 	public int grabAttackAnimation() {
@@ -66,11 +78,18 @@ public abstract class Entity {
 				return player.getMagic().getSpellDefinitions()[player.getMagic().getMagicIndex()].getAnimationId();
 			}
 			if (player.getAttackType() == AttackTypes.RANGED) {
-				return player.getRanged().getBowDefinitions()[player.getRanged().getBowIndex()].getAnimationId();
+				int animation = player.getRanged().getBowDefinitions()[player.getRanged().getBowIndex()].getAnimationId();
+				if (player.isSpecialAttackActive())
+					animation = SpecialAttack.getSpecialAttackAnimation(player, animation);
+				return animation;
 			}
 			else {
-				Item weapon = player.getEquipment().getItemContainer().get(3);
-				return (weapon == null ? 422 : weapon.getEquipmentDefintion().getAttackStyles().get(0));
+				//Item weapon = player.getEquipment().getItemContainer().get(3);
+				//int animation = (weapon == null ? 422 : weapon.getEquipmentDefintion().getAttackStyles().get(0));
+				int animation = WeaponData.getAttackAnimation(player);
+				if (player.isSpecialAttackActive())
+					animation = SpecialAttack.getSpecialAttackAnimation(player, animation);
+				return animation;
 			}
 		} else if (this instanceof Npc) {
 			Npc npc = (Npc) this;
@@ -80,16 +99,16 @@ public abstract class Entity {
 	}
 	
 	public int grabDefenceAnimation() {
-		int anim = 0;
 		if (this instanceof Player) {
 			Player player = (Player) this;
-			Item shield = player.getEquipment().getItemContainer().get(5);
-			anim = shield == null ? 404 : shield.getEquipmentDefintion().getDefenseAnim();
+			return WeaponData.getBlockAnimation(player);
+			//Item shield = player.getEquipment().getItemContainer().get(5);
+			//anim = shield == null ? 404 : shield.getEquipmentDefintion().getDefenseAnim();
 		} else if (this instanceof Npc) {
 			Npc npc = (Npc) this;
-			anim = npc.getDefinition().getDefenceAnim();
+			return npc.getDefinition().getDefenceAnim();
 		}
-		return anim;
+		return 404;
 	}
 	
 	public boolean shouldAutoRetaliate() {
@@ -121,6 +140,25 @@ public abstract class Entity {
 		else {
 			return 0;
 		}
+	}
+	
+	/**
+	  * Only use through the attacker (attacker.applyPrayerEffects()).
+	  */
+	public void applyPrayerEffects(Entity victim, int hit) {
+		if (victim instanceof Player) {
+			Player player = (Player) this;
+			Player otherPlayer = (Player) victim;
+			player.getPrayer().applySmiteEffect(otherPlayer, hit);
+		}
+	}
+	
+	public int applyPrayerToHit(Entity attacker, Entity victim, int hit) {
+		if (victim instanceof Player) {
+			Player player = (Player) victim;
+			return player.getPrayer().prayerHitModifiers(attacker, victim, hit);
+		}
+		return hit;
 	}
 	
 	public int getNpcMaxHit() {
@@ -197,14 +235,6 @@ public abstract class Entity {
 		return attributes;
 	}
 	
-	public void setDamage(int damage) {
-		this.damage = damage;
-	}
-	
-	public int getDamage() {
-		return damage;
-	}
-	
 	public void setHitType(int hitType) {
 		this.hitType = hitType;
 	}
@@ -227,14 +257,6 @@ public abstract class Entity {
 	
 	public int getAttackTimer() {
 		return attackTimer;
-	}
-	
-	public void setHitDelayTimer(int hitDelayTimer) {
-		this.hitDelayTimer = hitDelayTimer;
-	}
-	
-	public int getHitDelayTimer() {
-		return hitDelayTimer;
 	}
 	
 	public boolean isInstigatingAttack() {
@@ -275,6 +297,62 @@ public abstract class Entity {
 
 	public int getFrozenTimer() {
 		return frozenTimer;
+	}
+	
+	public void setFreezeImmunityTimer(int freezeImmunityTimer) {
+		this.freezeImmunityTimer = freezeImmunityTimer;
+	}
+
+	public int getFreezeImmunityTimer() {
+		return freezeImmunityTimer;
+	}
+	
+	public void setPoisoned(boolean isPoisoned) {
+		this.isPoisoned = isPoisoned;
+	}
+
+	public boolean isPoisoned() {
+		return isPoisoned;
+	}
+	
+	public void setPoisonedTimer(int poisonedTimer) {
+		this.poisonedTimer = poisonedTimer;
+	}
+
+	public int getPoisonedTimer() {
+		return poisonedTimer;
+	}
+	
+	public void setPoisonHitTimer(int poisonHitTimer) {
+		this.poisonHitTimer = poisonHitTimer;
+	}
+
+	public int getPoisonHitTimer() {
+		return poisonHitTimer;
+	}
+	
+	public void setPoisonDamage(int poisonDamage) {
+		this.poisonDamage = poisonDamage;
+	}
+
+	public int getPoisonDamage() {
+		return poisonDamage;
+	}
+	
+	public void setPoisonImmunityTimer(int poisonImmunityTimer) {
+		this.poisonImmunityTimer = poisonImmunityTimer;
+	}
+
+	public int getPoisonImmunityTimer() {
+		return poisonImmunityTimer;
+	}
+	
+	public void setFireImmunityTimer(int fireImmunityTimer) {
+		this.fireImmunityTimer = fireImmunityTimer;
+	}
+
+	public int getFireImmunityTimer() {
+		return fireImmunityTimer;
 	}
 	
 	public void setAttackType(AttackTypes attackType) {

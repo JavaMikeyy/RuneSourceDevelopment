@@ -120,20 +120,15 @@ public class WalkToActions {
 				Npc npc = World.getNpcs()[player.getNpcClickIndex()];
 				npc.getUpdateFlags().faceEntity(player.getIndex() + 32768);
 				switch (player.getClickId()) {
-					case 494:
-						player.getDialogue().sendDialogue(2);
-						break;
-					case 2244:
-						player.getDialogue().sendDialogue(8);
-						break;
-					case 1597:
-						player.getDialogue().sendDialogue(22);
-						break;
-					case 599:
-						player.getDialogue().sendDialogue(32);
+					case 494: //Banker
+					case 1597: //Vannaka
+					case 599: //Make-over mage
+					case 2258: //Mage of zamorak
+					case 2244: //RuneScape guide	
+						player.getDialogue().sendDialogue(player.getClickId(), 1);
 						break;
 					default:
-						player.getDialogue().sendDialogue(1);
+						player.getDialogue().sendDialogue(-1, -1);
 						break;
 				}
 				actions = null;
@@ -143,7 +138,12 @@ public class WalkToActions {
 	}
 	
 	private static void doNpcSecondClick(final Player player) {
-		player.getFishing().startFishing(player.getClickId(), 2);
+		for (int i = 0; i < player.getFishing().FISHING.length; i++) {
+			if (player.getClickId() == player.getFishing().FISHING[i][0]) {
+				player.getFishing().startFishing(player.getClickId(), 2);
+				return;
+			}
+		}
 		player.setWalkToAction(new Tick(1) {
 			@Override
 			public void execute() {
@@ -176,6 +176,21 @@ public class WalkToActions {
 				case 520:
 				case 521:
 					ShopManager.openShop(player, 6);
+					break;
+				case 576:
+					ShopManager.openShop(player, 7);
+					break;
+				case 585:
+					ShopManager.openShop(player, 8);
+					break;
+				case 587:
+					ShopManager.openShop(player, 9);
+					break;
+				case 804:
+					player.getSkillInterfaces().sendTanningInterface();
+					break;
+				case 2258:
+					ShopManager.openShop(player, 10);
 					break;
 				}
 				actions = null;

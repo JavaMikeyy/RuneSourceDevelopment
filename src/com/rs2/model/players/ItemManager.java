@@ -195,7 +195,7 @@ public class ItemManager {
 	@SuppressWarnings("unchecked")
 	public void loadItemDefinitions() throws FileNotFoundException, IOException {
 		System.out.println("Loading item definitions...");
-		List<ItemDefinition> list = (List<ItemDefinition>) XStreamUtil.getxStream().fromXML(new FileInputStream("./data/itemdefs.xml"));
+		List<ItemDefinition> list = (List<ItemDefinition>) XStreamUtil.getxStream().fromXML(new FileInputStream("./data/content/itemdefs.xml"));
 		for (ItemDefinition def : list) {
 			itemDefinitions[def.getId()] = def;
 		}
@@ -206,7 +206,7 @@ public class ItemManager {
 	public void loadEquipmentDefinitions() throws FileNotFoundException {
 		System.out.println("Loading equipment definitions...");
 		List<EquipmentDefinition> list = (List<EquipmentDefinition>)
-			XStreamUtil.getxStream().fromXML(new FileInputStream("./data/equipdefs.xml"));
+			XStreamUtil.getxStream().fromXML(new FileInputStream("./data/content/combat/equipdefs.xml"));
 		for (EquipmentDefinition def : list) {
 			equipmentDefinition[def.getId()] = def;
 		}

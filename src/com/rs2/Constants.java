@@ -2,7 +2,7 @@ package com.rs2;
 
 public class Constants {
 	
-	public static final String SERVER_NAME = "RuneSource (Open-Source) - BETA";
+	public static final String SERVER_NAME = "Project Endeavor Beta (Open-Source) - Based on RuneSource";
 	public static final String[] MESSAGES_ON_LOGIN =
 	{
 		"Please refer to the advertisement thread for information on playing."

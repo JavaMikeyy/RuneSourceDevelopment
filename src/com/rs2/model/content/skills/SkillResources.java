@@ -94,7 +94,7 @@ public class SkillResources {
 					if (player.getClickId() == player.getCooking().COOKING_OBJECTS[i][0])
 						player.getUpdateFlags().sendAnimation(player.getCooking().COOKING_OBJECTS[i][1], 0);
 				if (isSuccess(SKILL_INDEX, SKILL_INFO)) {
-					player.getSkill().addExp(12, SKILL_EXP[SKILL_INDEX]);
+					player.getSkill().addExp(skillId, SKILL_EXP[SKILL_INDEX]);
 					player.getInventory().addItem(new Item(SKILL_INFO[SKILL_INDEX][1], SKILL_INFO[SKILL_INDEX][2]));
 					player.getActionSender().sendMessage("You cook the " + ItemManager.getInstance().getItemName(SKILL_INFO[SKILL_INDEX][1]) + ".");
 				}
@@ -105,7 +105,7 @@ public class SkillResources {
 				break;
 			default://Anything not covered
 				player.getUpdateFlags().sendAnimation(SKILL_INFO[SKILL_INDEX][3], 0);
-				player.getSkill().addExp(12, SKILL_EXP[SKILL_INDEX]);
+				player.getSkill().addExp(skillId, SKILL_EXP[SKILL_INDEX]);
 				player.getInventory().addItem(new Item(SKILL_INFO[SKILL_INDEX][1], SKILL_INFO[SKILL_INDEX][2]));
 				player.getActionSender().sendMessage("You make " + textAddon(SKILL_INFO, SKILL_INDEX) + " "
 				+ ItemManager.getInstance().getItemName(SKILL_INFO[SKILL_INDEX][1]) + ".");
@@ -151,6 +151,5 @@ public class SkillResources {
 	public int getSkillId() {
 		return skillId;
 	}
-	
 	
 }

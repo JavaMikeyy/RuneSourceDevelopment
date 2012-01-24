@@ -70,8 +70,19 @@ public class PlayerSave {
 		write.writeInt(player.getMusicVolume());
 		write.writeInt(player.getEffectVolume());
 		write.writeInt(player.getQuestPoints());
+		write.writeDouble(player.getSpecialAmount());
 		write.writeUTF((String) player.getSlayerTask()[0]);
 		write.writeInt((Integer) player.getSlayerTask()[1]);
+		write.writeBoolean(player.getBankPin().isChangingBankPin());
+		write.writeBoolean(player.getBankPin().isDeletingBankPin());
+		write.writeInt(player.getBankPin().getPinAppendYear());
+		write.writeInt(player.getBankPin().getPinAppendDay());
+		for (int i = 0; i < player.getBankPin().getBankPin().length; i ++) {
+			write.writeInt(player.getBankPin().getBankPin()[i]);
+		}
+		for (int i = 0; i < player.getBankPin().getPendingBankPin().length; i ++) {
+			write.writeInt(player.getBankPin().getPendingBankPin()[i]);
+		}
 		for (int i = 0; i < player.getQuesting().questData.length; i ++) {
 			write.writeInt((Integer) player.getQuesting().questData[i][1]);
 		}
@@ -161,8 +172,19 @@ public class PlayerSave {
 		player.setMusicVolume(load.readInt());
 		player.setEffectVolume(load.readInt());
 		player.setQuestPoints(load.readInt());
+		player.setSpecialAmount(load.readDouble());
 		Object[] slayerTask = {load.readUTF(), load.readInt()};
 		player.setSlayerTask(slayerTask);
+		player.getBankPin().setChangingBankPin(load.readBoolean());
+		player.getBankPin().setDeletingBankPin(load.readBoolean());
+		player.getBankPin().setPinAppendYear(load.readInt());
+		player.getBankPin().setPinAppendDay(load.readInt());
+		for (int i = 0; i < player.getBankPin().getBankPin().length; i ++) {
+			player.getBankPin().getBankPin()[i] = load.readInt();
+		}
+		for (int i = 0; i < player.getBankPin().getPendingBankPin().length; i ++) {
+			player.getBankPin().getPendingBankPin()[i] = load.readInt();
+		}
 		for (int i = 0; i < player.getQuesting().questData.length; i ++) {
 			player.getQuesting().questData[i][1] = load.readInt();
 		}

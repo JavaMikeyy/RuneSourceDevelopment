@@ -12,36 +12,36 @@ public class MakeOverMage {
 
 	public static void sendDialogue(Player player, int dialogueId) {
 		switch (dialogueId) {
-			case 32:
+			case 1:
 				player.getDialogue().sendNpcChat2("Greetings, " + player.getUsername() + ".", "How may I assist you?", 
 						player.getDialogue().CONTENT);
-				player.getDialogue().setNextDialogue(33);
+				player.getDialogue().setNextDialogue(2);
 				break;
-			case 33:
+			case 2:
 				player.getDialogue().sendOption2("Can you change my appearance?", "I'm fine, thanks.");
 				player.getDialogue().setOptionId(4);
 				break;
-			case 34:
+			case 3:
 				player.getDialogue().sendPlayerChat1("Can you change my appearance?", player.getDialogue().CONTENT);
-				player.getDialogue().setNextDialogue(35);
+				player.getDialogue().setNextDialogue(4);
 				break;
-			case 35:
+			case 4:
 				player.getDialogue().sendNpcChat2("Sure.", "Make your selection, and it will be done.", 
 						player.getDialogue().CONTENT);
-				player.getDialogue().setNextDialogue(36);
+				player.getDialogue().setNextDialogue(5);
 				break;
-			case 36:
-				player.getDialogue().setNextDialogue(0);
+			case 5:
+				player.getDialogue().endDialogue();
 				player.getActionSender().sendInterface(3559);
 				break;
-			case 37:
+			case 6:
 				player.getDialogue().sendPlayerChat1("I'm fine, thanks.", player.getDialogue().CONTENT);
-				player.getDialogue().setNextDialogue(38);
+				player.getDialogue().setNextDialogue(7);
 				break;
-			case 38:
+			case 7:
 				player.getDialogue().sendNpcChat2("I'm a busy man.", "Come back when you need something.", 
 						player.getDialogue().CONTENT);
-				player.getDialogue().setNextDialogue(0);
+				player.getDialogue().endDialogue();
 				break;
 			
 		}

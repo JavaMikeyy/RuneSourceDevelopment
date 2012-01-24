@@ -89,7 +89,6 @@ public class ShopManager {
 		} else {
 			shop.getCurrentStock().remove(new Item(item.getId(), amount));
 		}
-		System.out.println("" + player.getServerPoints());
 		player.getInventory().addItem(new Item(shopItem, amount));
 		player.getInventory().refresh(3823);
 		refresh(player, shop);
@@ -201,13 +200,13 @@ public class ShopManager {
 			case SERVER_POINTS:
 				return "Server Points";
 		}
-		return "Points";
+		return "Coins";
 	}
 	
 	@SuppressWarnings("unchecked")
 	public static void loadShops() throws FileNotFoundException {
 		System.out.println("Loading shops...");
-		List<Shop> list = (List<Shop>) XStreamUtil.getxStream().fromXML(new FileInputStream("./data/shops.xml"));
+		List<Shop> list = (List<Shop>) XStreamUtil.getxStream().fromXML(new FileInputStream("./data/content/shops.xml"));
 		for (Shop shop : list) {
 			Container stock = new Container(Type.ALWAYS_STACK, SIZE);
 			Container currentStock = new Container(Type.ALWAYS_STACK, SIZE);

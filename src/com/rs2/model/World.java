@@ -61,7 +61,6 @@ public class World {
 				continue;
 			}
 			try {
-				//player.getCombat().combatTick(player);
 				player.process();
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -76,7 +75,6 @@ public class World {
 				continue;
 			}
 			try {
-				//npc.getCombat().combatTick(npc);
 				npc.process();
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -238,11 +236,21 @@ public class World {
 		for (Player player : players) {
 			if (player == null)
 				continue;
-			if (player.getUsername().equals(name)) {
+			if (player.getUsername().equalsIgnoreCase(name)) {
 				return player;
 			}
 		}
 		return null;
+	}
+	
+	public static void messageToStaff(String message) {
+		for (Player player : players) {
+			if (player == null)
+				continue;
+			if (player.getStaffRights() >= 1) {
+				player.getActionSender().sendMessage("Attention staff: " + message);
+			}
+		}
 	}
 	
 	public static int getNpcIndex(int id) {

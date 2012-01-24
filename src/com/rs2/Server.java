@@ -93,8 +93,8 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 		try {
-			//System.setOut(new Misc.TimestampLogger(System.out, "./logs/out.log"));
-			//System.setErr(new Misc.TimestampLogger(System.err, "./logs/err.log"));
+			System.setOut(new Misc.TimestampLogger(System.out/*, "./data/out.log"*/));
+			System.setErr(new Misc.TimestampLogger(System.err, "./data/err.log"));
 
 			address = new InetSocketAddress(host, port);
 			System.out.println("Starting " + Constants.SERVER_NAME + " on " + address + "...");

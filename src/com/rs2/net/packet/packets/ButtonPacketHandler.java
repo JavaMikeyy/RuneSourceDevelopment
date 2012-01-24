@@ -1,6 +1,7 @@
 package com.rs2.net.packet.packets;
 
 import com.rs2.model.content.Teleportation;
+import com.rs2.model.content.combat.util.SpecialAttack;
 import com.rs2.model.players.BankManager;
 import com.rs2.model.players.Player;
 import com.rs2.model.players.TradeManager;
@@ -19,22 +20,10 @@ public class ButtonPacketHandler implements PacketHandler {
 	}
 	
 	private void handleButton(Player player, int buttonId) {
-		player.getPrayer().setPrayers(buttonId);
-		player.getTeleportation().activateTeleportButton(buttonId);
-		player.getEmotes().activateEmoteButton(buttonId);
-		player.getCooking().clickingInterfaceButtons(buttonId);
-		player.getCrafting().tanningHideButtons(buttonId);
-		player.getSkillInterfaces().clickingInterfaceButtons(buttonId);
-		player.getDialogue().optionButtons(buttonId);
-		player.getQuesting().clickQuestGuide(buttonId);
-		player.getGenie().clickLampButton(buttonId);
-		player.getMagic().clickingToAutoCast(buttonId);
 		switch (buttonId) {
 		case 152:
-			player.getMovementHandler().setRunToggled(false);
-			break;
-		case 153:
-			player.getMovementHandler().setRunToggled(true);
+			player.getMovementHandler().setRunToggled(!player.getMovementHandler().isRunToggled());
+			player.getActionSender().sendConfig(173, player.getMovementHandler().isRunToggled() ? 1 : 0);
 			break;
 		case 150:
 			player.setAutoRetaliate(true);
@@ -54,29 +43,21 @@ public class ButtonPacketHandler implements PacketHandler {
 		case 3144:
 			player.setScreenBrightness(4);
 			break;
-		case 3146://setMouseButtons (0/1)
-			player.setMouseButtons(1);
-			break;
-		case 3145://setMouseButtons (1/1)
-			player.setMouseButtons(0);
+		case 3145:
+			player.setMouseButtons(player.getMouseButtons() == 1 ? 0 : 1);
+			player.getActionSender().sendConfig(170, player.getMouseButtons());
 			break;
 		case 3147:
-			player.setChatEffects(0);
-			break;
-		case 3148:
-			player.setChatEffects(1);
+			player.setChatEffects(player.getChatEffects() == 1 ? 0 : 1);
+			player.getActionSender().sendConfig(171, player.getChatEffects());
 			break;
 		case 3189:
-			player.setSplitPrivateChat(1);
-			break;
-		case 3190:
-			player.setSplitPrivateChat(0);
+			player.setSplitPrivateChat(player.getSplitPrivateChat() == 1 ? 0 : 1);
+			player.getActionSender().sendConfig(287, player.getSplitPrivateChat());
 			break;
 		case 48176:
-			player.setAcceptAid(1);
-			break;
-		case 48177:
-			player.setAcceptAid(0);
+			player.setAcceptAid(player.getAcceptAid() == 1 ? 0 : 1);
+			player.getActionSender().sendConfig(427, player.getAcceptAid());
 			break;
 		case 3162://setMusicVolume (0/4)
 			player.setMusicVolume(4);
@@ -147,5 +128,17 @@ public class ButtonPacketHandler implements PacketHandler {
 			System.out.println("Unhandled button: " + buttonId);
 			break;
 		}
+		player.getPrayer().setPrayers(buttonId);
+		SpecialAttack.clickSpecialBar(player, buttonId);
+		player.getMagic().clickingToAutoCast(buttonId);
+		player.getTeleportation().activateTeleportButton(buttonId);
+		player.getDialogue().optionButtons(buttonId);
+		player.getQuesting().clickQuestGuide(buttonId);
+		player.getCooking().clickingInterfaceButtons(buttonId);
+		player.getCrafting().tanningHideButtons(buttonId);
+		player.getBankPin().clickPinButton(buttonId);
+		player.getSkillInterfaces().clickingInterfaceButtons(buttonId);
+		player.getGenie().clickLampButton(buttonId);
+		player.getEmotes().activateEmoteButton(buttonId);
 	}
 }

@@ -165,7 +165,6 @@ public class Following {
 			return 2;
 		}
 		if (leaderX < followerX && leaderY < followerY) {
-			System.out.println("" + 5);
 			return 5;
 		}
 		if (leaderX > followerX && leaderY < followerY) {

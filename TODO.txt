@@ -1,12 +1,19 @@
 Global sounds with volume based on distance.
 Make the punishment system add your name to the list when you get punished, not on login. 
 ^. And make it check your punishment status and remove the index if your clear of punishments.
-Finish teleports.
-Finish XML combat stuff.
-Verify the client with a string check through the magic id.
 Fix offset animation to graphic on wave spells.
-Fix ancient height graphics.
-Add magic formulas, and review all of them.
 Review fishing and cooking Formulas.
 Re-do the sound system on the 317 client to do distance sound.
 Add an infinity symbol for shops.
+Chicken thing wacking.
+Magic effects.
+Make it so you can't attack diagonal with Melee.
+Apply prayer bonus to prayer.
+Player/NPC drops.
+Finish special attacks.
+Vengeance.
+Finish range weapons.
+EXP rate boost. (Genie, addExp method)
+impl quests in impl package
+Multi-barrage.
+Tele-tabs.

@@ -322,6 +322,19 @@ public class ItemPacketHandler implements PacketHandler {
 		player.getFood().eatFood(item, slot);
 		if (item == 2528)
 			player.getGenie().sendLampInterface();
+		if (item == 4155) {
+			String slayerNpc = (String) player.getSlayerTask()[0];
+			if (!slayerNpc.equalsIgnoreCase("")) {
+				player.getDialogue().sendStatement1("Your existing task is to kill " + 
+						(Integer) player.getSlayerTask()[1] + 
+						" " + slayerNpc + "s.");
+				player.getDialogue().setNextDialogue(0);
+			}
+			else {
+				player.getDialogue().sendStatement1("You don't have a slaver task.");
+			}
+		}
+		player.getPotion().drinkPotion(item, slot);
 	}
 	
 	private void handleThirdClickItem(Player player, Packet packet) {

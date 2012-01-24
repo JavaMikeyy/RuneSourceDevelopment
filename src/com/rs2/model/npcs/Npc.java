@@ -7,6 +7,7 @@ import com.rs2.model.Position;
 import com.rs2.model.World;
 import com.rs2.model.content.Following;
 import com.rs2.model.content.combat.Combat;
+import com.rs2.model.content.combat.util.FreezeEntity;
 
 /**
  * A non-player-character.
@@ -60,6 +61,7 @@ public class Npc extends Entity {
 	@Override
 	public void process() {
 		getFollowing().followTick(this);
+		FreezeEntity.freezeTick(this);
 		if (getCombatTimer() == 0)
 			sendNpcWalk();
 		if (needsRespawn) {
@@ -74,7 +76,6 @@ public class Npc extends Entity {
 				needsRespawn = true;
 				isVisible = false;
 				getUpdateFlags().setUpdateRequired(true);
-				System.out.println("" + definition.getName());
 				getCombatingEntity().appendSlayerTask(definition.getName(), definition.getMaxHp());
 				combat.resetCombat(this);
 			}
@@ -102,6 +103,8 @@ public class Npc extends Entity {
 	
 	@Override
 	public void hit(int damage, int hitType) {
+		if (isDead())
+			return;
 		if (damage > hp) {
 			damage = hp;
 		}
@@ -115,7 +118,6 @@ public class Npc extends Entity {
 			getUpdateFlags().setHitType2(hitType);
 			getUpdateFlags().setHitUpdate2(true);
 		}
-		setDamage(damage);
 		setHitType(hitType);
 		if (hp <= 0) {
 			setDead(true);
@@ -127,7 +129,7 @@ public class Npc extends Entity {
 	  * Makes walkable npcs walk, then updates it's position.
 	  */
 	public void sendNpcWalk() {
-		if (walkType == WalkType.WALK && Misc.randomNumber(10) == 0) {
+		if (walkType == WalkType.WALK && Misc.randomNumber(10) == 0 && !isFrozen()) {
 			int yModifier = 0, xModifier = 0, direction = 0;
 			int[][] coordinateModifiers =
 			{{-1, 1}, {0, 1}, {1, 1}, {-1, 0}, 

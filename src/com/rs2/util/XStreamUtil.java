@@ -20,16 +20,17 @@ package com.rs2.util;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import com.thoughtworks.xstream.XStream;
+
 import com.rs2.model.content.combat.magic.SpellLoader;
 import com.rs2.model.content.combat.ranged.BowLoader;
 import com.rs2.model.content.combat.util.Bonuses;
-import com.rs2.model.content.food.FoodLoader;
-import com.rs2.model.content.food.PotionLoader;
+import com.rs2.model.content.consumables.FoodLoader;
+import com.rs2.model.content.consumables.PotionLoader;
 import com.rs2.model.npcs.NpcLoader;
 import com.rs2.model.players.ItemManager;
 import com.rs2.model.players.ShopManager;
 import com.rs2.model.players.GlobalObjectHandler;
-import com.thoughtworks.xstream.XStream;
 
 /**
  * Class handling all XStream
@@ -60,8 +61,8 @@ public class XStreamUtil {
 		xStream.alias("object", com.rs2.model.players.GlobalObject.class);
 		xStream.alias("spelldef", com.rs2.model.content.combat.magic.SpellDefinition.class);
 		xStream.alias("bowdef", com.rs2.model.content.combat.ranged.BowDefinition.class);
-		xStream.alias("fooddef", com.rs2.model.content.food.FoodLoader.FoodDefinition.class);
-		xStream.alias("potiondef", com.rs2.model.content.food.PotionLoader.PotionDefinition.class);
+		xStream.alias("fooddef", com.rs2.model.content.consumables.FoodLoader.FoodDefinition.class);
+		xStream.alias("potiondef", com.rs2.model.content.consumables.PotionLoader.PotionDefinition.class);
 		xStream.alias("bonus", com.rs2.model.content.combat.util.Bonuses.BonusDefinition.class);
 	}
 	

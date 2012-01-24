@@ -37,12 +37,6 @@ public class Questing {
 	28175, 28167, 28176, 27177, 28179, 28180
 	};
 	
-	private GettingStarted gettingStarted = new GettingStarted();
-	
-	public void sendQuestDialogue(int dialogueId) {
-		gettingStarted.sendDialogue(player, dialogueId);
-	}
-	
 	private boolean questDialogueTicking = false;
 	
 	public void updateQuestList() {
@@ -118,12 +112,12 @@ public class Questing {
 
 	public void executeTimedDialogue(int tickCount, int startId, final int amount) {
 		player.getDialogue().setNextDialogue(startId);
-		player.getDialogue().sendDialogue(player.getDialogue().getNextDialogue());
+		player.getDialogue().sendDialogue(player.getClickId(), player.getDialogue().getNextDialogue());
 		World.submit(new Tick(10) {
 			int currentAmount = 1;
 			@Override
 			public void execute() {
-				player.getDialogue().sendDialogue(player.getDialogue().getNextDialogue());
+				player.getDialogue().sendDialogue(player.getClickId(), player.getDialogue().getNextDialogue());
 				currentAmount++;
 				if (currentAmount == amount) {
 					stop();
